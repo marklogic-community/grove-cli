@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A command-line tool for generating Muir applications.",
   "main": "index.js",
-	"bin": {
+  "bin": {
     "muir": "./index.js"
   },
   "scripts": {
@@ -16,5 +16,8 @@
     "app generator"
   ],
   "author": "Patrick McElwee <patrick.mcelwee@marklogic.com> (patmac.us)",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "commander": "^2.15.1"
+  }
 }
