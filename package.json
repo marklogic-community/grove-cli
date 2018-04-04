@@ -1,0 +1,20 @@
+{
+  "name": "muir-cli",
+  "version": "0.0.1",
+  "description": "A command-line tool for generating Muir applications.",
+  "main": "index.js",
+	"bin": {
+    "muir": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "MarkLogic",
+    "MUIR",
+    "UI",
+    "app generator"
+  ],
+  "author": "Patrick McElwee <patrick.mcelwee@marklogic.com> (patmac.us)",
+  "license": "Apache-2.0"
+}
