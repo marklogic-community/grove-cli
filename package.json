@@ -19,5 +19,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "commander": "^2.15.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1"
   }
 }
