@@ -51,6 +51,12 @@ var createNew = function(mlAppName, logfile) {
     })
     .then(function(mlPort) {
       config.mlPort = mlPort;
+      return prompt(
+        'What port do you want to use to run a local Node server for development?',
+        { default: 9003 }
+      );
+    }).then(function(nodePort) {
+      config.nodePort = nodePort;
       return util.promisify(
         fs.writeFile
       )('muir-local.json', JSON.stringify(config, 0, 2));
