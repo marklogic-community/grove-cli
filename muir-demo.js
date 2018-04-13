@@ -2,34 +2,82 @@
 var program = require('commander');
 var fs = require('fs');
 var childProcess = require('child_process');
-var createNew = require('./src/createNew');
 
+var confirmAppName = require('./src/confirmAppName');
+var createNew = require('./src/createNew');
+var runConfig = require('./src/runConfig');
+
+// TODO: move logs into logs/
 var logfile = 'muir-demo.log';
 
 program.parse(process.argv);
-var appName = program.args[0];
+confirmAppName(program.args[0]).then(function(mlAppName) {
+  var configFromCreateNew = {};
+  var createNewPromise = createNew({
+    config: {
+      mlAppName: mlAppName
+    },
+    logfile: logfile
+  }).then(
+    function(config) {
+      configFromCreateNew = config;
+    },
+    function(error) {
+      throw error;
+    }
+  );
 
-// TODO: get logging working
-createNew(appName, logfile).then(function() {
-  console.log('\nProvisioning your MarkLogic database');
-  childProcess.execSync('npm run mlDeploy', {
-    stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
-  });
+  console.log(
+    "\nWhile we are provisioning your app, let's be sure we have all the information we need for the next step."
+  );
+  var configFromRunConfig = {};
+  var runConfigPromise = runConfig({ logfile: logfile }).then(
+    function(config) {
+      configFromRunConfig = config;
+    },
+    function(error) {
+      console.error(error);
+      process.exit(1);
+    }
+  );
 
-  console.log('\nLoading sample data');
-  childProcess.execSync('npm run loadSampleData', {
-    stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
-  });
+  Promise.all([createNewPromise, runConfigPromise]).then(
+    function() {
+      var config = Object.assign({}, configFromCreateNew, configFromRunConfig);
+      console.log('\nProvisioning your MarkLogic database');
+      var gradleFlags =
+        ' -PmlAppName=' +
+        config.mlAppName +
+        ' -PmlHost=' +
+        config.mlHost +
+        ' -PmlRestPort=' +
+        config.mlRestPort;
+      process.chdir('marklogic');
+      childProcess.execSync('./gradlew mlDeploy' + gradleFlags, {
+        stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
+      });
 
-  console.log('\nRunning your application');
-  var runningApp = childProcess.spawn('npm', ['start']);
-  runningApp.stdout.on('data', function(data) {
-    console.log(data.toString());
-  });
-  runningApp.stderr.on('data', function(data) {
-    console.log(data.toString());
-  });
-  runningApp.on('exit', function(code) {
-    console.log('Your application exited with code ' + code.toString());
-  });
+      console.log('\nLoading sample data');
+      childProcess.execSync('./gradlew loadSampleData' + gradleFlags, {
+        stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
+      });
+      process.chdir('..');
+
+      console.log('\nRunning your application');
+      var runningApp = childProcess.spawn('npm', ['start']);
+      runningApp.stdout.on('data', function(data) {
+        console.log(data.toString());
+      });
+      runningApp.stderr.on('data', function(data) {
+        console.log(data.toString());
+      });
+      runningApp.on('exit', function(code) {
+        console.log('Your application exited with code ' + code.toString());
+      });
+    },
+    function(error) {
+      console.error(error);
+      process.exit(1);
+    }
+  );
 });
