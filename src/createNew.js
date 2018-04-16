@@ -24,7 +24,7 @@ var createNew = function(options) {
 
   // TODO: return configManager.addOrOverwrite(config);
   var writeConfigPromise = util.promisify(fs.writeFile)(
-    'muir.json',
+    'muir-local.json',
     JSON.stringify(config, 0, 2)
   );
 
