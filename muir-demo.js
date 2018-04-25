@@ -28,7 +28,7 @@ confirmAppName(program.args[0]).then(function(mlAppName) {
   );
 
   console.log(
-    "\nWhile we are provisioning your app, let's be sure we have all the information we need for the next step."
+    "\nWhile we are provisioning your app, which might take a while, let's be sure we have all the information we need for the next step."
   );
   var configFromRunConfig = {};
   var runConfigPromise = runConfig({ logfile: logfile }).then(
@@ -44,7 +44,9 @@ confirmAppName(program.args[0]).then(function(mlAppName) {
   Promise.all([createNewPromise, runConfigPromise]).then(
     function() {
       var config = Object.assign({}, configFromCreateNew, configFromRunConfig);
-      console.log('\nProvisioning your MarkLogic database');
+      console.log(
+        '\nProvisioning your MarkLogic database. This might take a while ...'
+      );
       var gradleFlags =
         ' -PmlAppName=' +
         config.mlAppName +
