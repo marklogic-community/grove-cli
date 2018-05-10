@@ -18,6 +18,7 @@
   "author": "Patrick McElwee <patrick.mcelwee@marklogic.com> (patmac.us)",
   "license": "Apache-2.0",
   "dependencies": {
+    "chalk": "^2.4.1",
     "commander": "^2.15.1"
   },
   "devDependencies": {

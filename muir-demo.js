@@ -1,51 +1,52 @@
 #!/usr/bin/env node
+require('./src/init');
+
 var program = require('commander');
 var fs = require('fs');
 var childProcess = require('child_process');
+var chalk = require('chalk');
 
 var confirmAppName = require('./src/confirmAppName');
 var createNew = require('./src/createNew');
 var runConfig = require('./src/runConfig');
+var handleError = require('./src/utils').handleError;
 
 // TODO: move logs into logs/
 var logfile = 'muir-demo.log';
 
 program.parse(process.argv);
-confirmAppName(program.args[0]).then(function(mlAppName) {
-  var configFromCreateNew = {};
-  var createNewPromise = createNew({
-    config: {
-      mlAppName: mlAppName
-    },
-    logfile: logfile
-  }).then(
-    function(config) {
-      configFromCreateNew = config;
-    },
-    function(error) {
-      throw error;
-    }
-  );
+confirmAppName(program.args[0])
+  .then(function(mlAppName) {
+    var configFromCreateNew = {};
+    var createNewPromise = createNew({
+      config: {
+        mlAppName: mlAppName
+      },
+      logfile: logfile
+    })
+      .then(function(config) {
+        configFromCreateNew = config;
+      })
+      .catch(handleError);
 
-  console.log(
-    "\nWhile we are provisioning your app, which might take a while, let's be sure we have all the information we need for the next step."
-  );
-  var configFromRunConfig = {};
-  var runConfigPromise = runConfig({ logfile: logfile }).then(
-    function(config) {
-      configFromRunConfig = config;
-    },
-    function(error) {
-      console.error(error);
-      process.exit(1);
-    }
-  );
+    console.log(
+      chalk.blue(
+        "\nWhile we are provisioning your app, which might take a while, let's be sure we have all the information we need for the next step."
+      )
+    );
+    var configFromRunConfig = {};
+    var runConfigPromise = runConfig({ logfile: logfile })
+      .then(function(config) {
+        configFromRunConfig = config;
+      })
+      .catch(handleError);
 
-  Promise.all([createNewPromise, runConfigPromise]).then(
-    function() {
+    Promise.all([createNewPromise, runConfigPromise]).then(function() {
       var config = Object.assign({}, configFromCreateNew, configFromRunConfig);
       console.log(
-        '\nProvisioning your MarkLogic database. This might take a while ...'
+        chalk.blue(
+          '\nProvisioning your MarkLogic database. This might take a while ...'
+        )
       );
       var gradleFlags =
         ' -PmlAppName=' +
@@ -59,13 +60,13 @@ confirmAppName(program.args[0]).then(function(mlAppName) {
         stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
       });
 
-      console.log('\nLoading sample data');
+      console.log(chalk.blue('\nLoading sample data'));
       childProcess.execSync('./gradlew loadSampleData' + gradleFlags, {
         stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
       });
       process.chdir('..');
 
-      console.log('\nRunning your application');
+      console.log(chalk.blue('\nRunning your application'));
       var runningApp = childProcess.spawn('npm', ['start']);
       runningApp.stdout.on('data', function(data) {
         console.log(data.toString());
@@ -74,12 +75,10 @@ confirmAppName(program.args[0]).then(function(mlAppName) {
         console.log(data.toString());
       });
       runningApp.on('exit', function(code) {
-        console.log('Your application exited with code ' + code.toString());
+        console.log(
+          chalk.red('Your application exited with code ' + code.toString())
+        );
       });
-    },
-    function(error) {
-      console.error(error);
-      process.exit(1);
-    }
-  );
-});
+    });
+  })
+  .catch(handleError);

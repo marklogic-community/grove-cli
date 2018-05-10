@@ -24,7 +24,7 @@ Use it by passing your new application name.
 
 ### muir config
 
-Generates or modifies settings for your application, based on prompts. This is the preferred way to manage configuration files.
+Generates or modifies settings for your application, based on prompts. This is the preferred way to manage configuration files. We plan to add additional functionality to it soon.
 
     muir config
 

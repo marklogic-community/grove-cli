@@ -1,6 +1,9 @@
 var fs = require('fs');
 var util = require('util');
 var childProcess = require('child_process');
+var chalk = require('chalk');
+
+var nodeConfigManager = require('./nodeConfigManager');
 
 var createNew = function(options) {
   options = options || {};
@@ -9,9 +12,11 @@ var createNew = function(options) {
   config.mlAppName = config.mlAppName || 'muir-app';
 
   console.log(
-    '\nGenerating a MUIR application named "' +
-      config.mlAppName +
-      '" using React and a Node Express.js middle-tier.'
+    chalk.blue(
+      '\nGenerating a MUIR application named "' +
+        config.mlAppName +
+        '" using React and a Node Express.js middle-tier.'
+    )
   );
   // TODO: log to a logfile?
   childProcess.execSync(
@@ -22,13 +27,11 @@ var createNew = function(options) {
   // Any subsequent actions should happen in context of the new app
   process.chdir(config.mlAppName);
 
-  // TODO: return configManager.addOrOverwrite(config);
-  var writeConfigPromise = util.promisify(fs.writeFile)(
-    'muir-local.json',
-    JSON.stringify(config, 0, 2)
-  );
+  var writeConfigPromise = nodeConfigManager.merge(config);
 
-  console.log('Provisioning your React application and Node middle-tier');
+  console.log(
+    chalk.blue('Provisioning your React application and Node middle-tier')
+  );
   var npmInstallPromise = util
     .promisify(childProcess.exec)('npm install')
     .then(

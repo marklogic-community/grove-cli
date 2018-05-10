@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+require('./src/init');
+
 var program = require('commander');
 
 var confirmAppName = require('./src/confirmAppName');
