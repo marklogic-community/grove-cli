@@ -13,7 +13,7 @@ var mlAppName = program.args[0];
 
 confirmAppName(program.args[0])
   .then(function(mlAppName) {
-    createNew({ config: { mlAppName: mlAppName } });
+    return createNew({ config: { mlAppName: mlAppName } });
   })
   .then(function(config) {
     console.log(
