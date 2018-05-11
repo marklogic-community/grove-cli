@@ -25,7 +25,6 @@ function read() {
       } else {
         config = {};
       }
-      console.log('config:', config);
       return config;
     })
     .catch(handleError);
