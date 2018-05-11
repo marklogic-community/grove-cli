@@ -1,5 +1,6 @@
 var prompt = require('./prompt');
 var nodeConfigManager = require('./nodeConfigManager');
+var reactConfigManager = require('./reactConfigManager');
 var handleError = require('./utils').handleError;
 
 function buildConfigFromUserInput(config) {
@@ -35,6 +36,7 @@ var runConfig = function runConfig(options) {
 
   return buildConfigFromUserInput(config)
     .then(nodeConfigManager.merge)
+    .then(reactConfigManager.merge)
     .catch(handleError);
 };
 

@@ -70,7 +70,8 @@ function forceWrite(config) {
     .promisify(fs.writeFile)('server/.env', propertify(config))
     .then(function() {
       return config;
-    });
+    })
+    .catch(handleError);
 }
 
 module.exports = {
