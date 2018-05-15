@@ -4,7 +4,7 @@
 
     npm install -g @marklogic-community/grove-cli
 
-This provides the `grove` command.
+This makes the `grove` command available on your command-line.
 
 ## Usage
 
@@ -12,7 +12,7 @@ This provides the `grove` command.
 
 Generates a new Grove project as a subdirectory of the current directory. The `new` command offers a choice among project templates. For now, it offers [React](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) and [Vue](https://project.marklogic.com/repo/users/gjosten/repos/grove-vue-template/browse) options.
 
-Use it by passing your new application name.
+Use it by passing your new Project name.
 
     grove new my-app
 
@@ -25,6 +25,8 @@ For example, you can pass a `--templateVersion`. This currently corresponds to a
 ### grove config
 
 Generates or modifies settings for your application, based on prompts. This is the preferred way to manage configuration files. **Run this command from the parent directory of your generated project.**
+
+**Also: Be sure to check your work into version control before running `config`, so you can see the changes made and back them out if necessary.**
 
     grove config
 
