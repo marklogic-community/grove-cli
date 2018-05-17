@@ -4,6 +4,7 @@ var childProcess = require('child_process');
 var chalk = require('chalk');
 
 var nodeConfigManager = require('./nodeConfigManager');
+var handleError = require('./utils').handleError;
 
 var createNew = function(options) {
   options = options || {};
@@ -34,28 +35,20 @@ var createNew = function(options) {
   );
   var npmInstallPromise = util
     .promisify(childProcess.exec)('npm install')
-    .then(
-      function(stdout, stderr) {
-        fs.appendFile(logfile, '\nlogging stdout:\n' + stdout, function(error) {
-          if (error) throw error;
-        });
-        fs.appendFile(logfile, '\nlogging stderr:\n' + stderr, function(error) {
-          if (error) throw error;
-        });
-      },
-      function(error) {
-        throw error;
-      }
-    );
+    .then(function(stdout, stderr) {
+      fs.appendFile(logfile, '\nlogging stdout:\n' + stdout, function(error) {
+        if (error) throw error;
+      });
+      fs.appendFile(logfile, '\nlogging stderr:\n' + stderr, function(error) {
+        if (error) throw error;
+      });
+    });
 
-  return Promise.all([writeConfigPromise, npmInstallPromise]).then(
-    function() {
+  return Promise.all([writeConfigPromise, npmInstallPromise])
+    .then(function() {
       return config;
-    },
-    function(error) {
-      throw error;
-    }
-  );
+    })
+    .catch(handleError);
 };
 
 module.exports = createNew;
