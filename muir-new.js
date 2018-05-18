@@ -17,35 +17,35 @@ confirmAppName(program.args[0])
   })
   .then(function(config) {
     console.log(
-      chalk.blue.bold(
+      chalk.blue(
         '\nCongratulations, you successfully generated a new MUIR application.'
       )
     );
 
     console.log(
       chalk.blue(
-        '\nNote that you need to have MarkLogic installed and configured with users, a database, and an AppServer running on the port expected by this application (which, again, you can configure using `muir config`). For your convenience, we have placed an ml-gradle project in the /marklogic directory of this generated application that can be used for MarkLogic automation tasks, if desired. It includes an out-of-the-box configuration matching MUIR default settings. You will need to change settings in ml-gradle to match changes you make to your MUIR app configuration.'
+        '\nYou can now start your application if you wish, though you will not be able to login unless you have also created a MarkLogic REST server on the default host and port (see below for details on using ml-gradle to do that).'
       )
-    );
-    console.log(
-      chalk.blue(
-        '\nSee https://github.com/marklogic-community/ml-gradle for more information about ml-gradle and the powerful assistance it can provide in automating MarkLogic.'
-      )
-    );
-
-    console.log(
-      chalk.blue.bold('\nYou can now start your application if you wish:')
     );
     console.log('\n    cd ' + config.mlAppName);
+    console.log('    npm install');
     console.log('    npm start');
 
     console.log(
-      chalk.blue.bold(
-        '\nYou may need to configure some application settings, such as hosts and port, first. You can do this using the `muir config` command:'
-      )
+      '\nYou may need to configure some application settings, such as hosts and port, first. You can do this using the `muir config` command:'
     );
-    console.log('\n    cd ' + config.mlAppName);
-    console.log('    muir config');
+    console.log('\n    muir config');
+
+    console.log(
+      '\nYou can invoke ml-gradle to deploy the configuration found in the `/marklogic` directory to MarkLogic by running:'
+    );
+    console.log('\n    npm run mlDeploy');
+    console.log(
+      '\nOther ml-gradle tasks can be run from inside the `/marklogic` directory, as described in the ml-gradle documentation:'
+    );
+    console.log('https://github.com/marklogic-community/ml-gradle');
+
+    console.log('\n');
 
     process.exit();
   })

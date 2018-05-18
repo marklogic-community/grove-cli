@@ -17,7 +17,6 @@ var logfile = 'muir-demo.log';
 program.parse(process.argv);
 confirmAppName(program.args[0])
   .then(function(mlAppName) {
-
     var createNewPromise = createNew({
       config: {
         mlAppName: mlAppName

@@ -31,7 +31,7 @@ var createNew = function(options) {
   var writeConfigPromise = nodeConfigManager.merge(config);
 
   console.log(
-    chalk.blue('Provisioning your React application and Node middle-tier')
+    chalk.blue('\nProvisioning your React application and Node middle-tier')
   );
   var npmInstallPromise = util
     .promisify(childProcess.exec)('npm install')
