@@ -37,20 +37,13 @@ confirmAppName(program.args[0])
             '\nProvisioning your MarkLogic database. This might take a while ...'
           )
         );
-        var gradleFlags =
-          ' -PmlAppName=' +
-          config.mlAppName +
-          ' -PmlHost=' +
-          config.mlHost +
-          ' -PmlRestPort=' +
-          config.mlRestPort;
         process.chdir('marklogic');
-        childProcess.execSync('./gradlew mlDeploy' + gradleFlags, {
+        childProcess.execSync('./gradlew mlDeploy', {
           stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
         });
 
         console.log(chalk.blue('\nLoading sample data'));
-        childProcess.execSync('./gradlew loadSampleData' + gradleFlags, {
+        childProcess.execSync('./gradlew loadSampleData', {
           stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
         });
         process.chdir('..');
