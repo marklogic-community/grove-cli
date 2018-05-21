@@ -3,6 +3,7 @@ var fs = require('fs');
 var handleError = require('./utils').handleError;
 
 // TODO: unit test
+// similar to mlGradleConfigManager
 function configify(properties) {
   var configMap = {
     MUIR_APP_NAME: 'mlAppName',

@@ -4,6 +4,7 @@ var childProcess = require('child_process');
 var chalk = require('chalk');
 
 var nodeConfigManager = require('./nodeConfigManager');
+var mlGradleConfigManager = require('./mlGradleConfigManager');
 var handleError = require('./utils').handleError;
 
 var createNew = function(options) {
@@ -28,7 +29,8 @@ var createNew = function(options) {
   // Any subsequent actions should happen in context of the new app
   process.chdir(config.mlAppName);
 
-  var writeConfigPromise = nodeConfigManager.merge(config);
+  var writeNodeConfigPromise = nodeConfigManager.merge(config);
+  var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
 
   console.log(
     chalk.blue('\nProvisioning your React application and Node middle-tier')
@@ -44,7 +46,11 @@ var createNew = function(options) {
       });
     });
 
-  return Promise.all([writeConfigPromise, npmInstallPromise])
+  return Promise.all([
+    writeNodeConfigPromise,
+    writeMlGradleConfigPromise,
+    npmInstallPromise
+  ])
     .then(function() {
       return config;
     })
