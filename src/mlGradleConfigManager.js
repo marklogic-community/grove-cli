@@ -12,7 +12,6 @@ function configify(propertyLines) {
   };
   let config = {};
   propertyLines.forEach(assignConfigFields);
-  console.log('mlGradle config: ', config);
   return config;
 }
 
@@ -27,22 +26,24 @@ function read() {
     .then(configify)
     .catch(function(error) {
       if (error.code === 'ENOENT') {
-        console.warn('marklogic/gradle.properties file does not exist');
+        console.warn(
+          'WARNING: marklogic/gradle.properties file does not exist'
+        );
         return {};
       }
       handleError(error);
     });
 }
 
-// TODO: write non-existent properties
-// think about a section dedicated to muir, might be easier
+// TODO: write non-existent properties relevant to ml-gradle??
+// TODO: think about a section dedicated to muir, might be easier
 function mergeWrite(config) {
   let configKeys = Object.keys(config);
   const overwritePropertiesWithConfig = line => {
     configKeys.forEach(key => {
       if (line.startsWith(key + '=')) {
         configKeys = configKeys.filter(k => k !== key);
-        line = 'mlAppName=' + config.mlAppName;
+        line = key + '=' + config[key];
       }
     });
     return line;
@@ -50,7 +51,6 @@ function mergeWrite(config) {
   return readFileLines()
     .then(propertyLines => propertyLines.map(overwritePropertiesWithConfig))
     .then(newPropertyLines => {
-      console.log('newPropertyLines:', newPropertyLines);
       util.promisify(fs.writeFile)(
         'marklogic/gradle.properties',
         newPropertyLines.join('\n')

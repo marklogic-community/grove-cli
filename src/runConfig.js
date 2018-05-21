@@ -1,7 +1,8 @@
-var prompt = require('./prompt');
-var nodeConfigManager = require('./nodeConfigManager');
-var reactConfigManager = require('./reactConfigManager');
-var handleError = require('./utils').handleError;
+const prompt = require('./prompt');
+const nodeConfigManager = require('./nodeConfigManager');
+const reactConfigManager = require('./reactConfigManager');
+const mlGradleConfigManager = require('./mlGradleConfigManager');
+const handleError = require('./utils').handleError;
 
 function buildConfigFromUserInput(config) {
   return prompt('What host is your instance of MarkLogic running on?', {
@@ -29,14 +30,19 @@ function buildConfigFromUserInput(config) {
     .catch(handleError);
 }
 
-var runConfig = function runConfig(options) {
+const runConfig = function runConfig(options) {
   options = options || {};
-  var logfile = options.logfile || 'muir-new.log';
-  var config = options.config || {};
+  const logfile = options.logfile || 'muir-new.log';
+  let config = options.config || {};
 
   return buildConfigFromUserInput(config)
-    .then(nodeConfigManager.merge)
-    .then(reactConfigManager.merge)
+    .then(newConfig =>
+      Promise.all([
+        nodeConfigManager.merge(newConfig),
+        reactConfigManager.merge(newConfig),
+        mlGradleConfigManager.merge(newConfig)
+      ])
+    )
     .catch(handleError);
 };
 
