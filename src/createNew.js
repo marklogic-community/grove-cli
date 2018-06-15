@@ -22,7 +22,7 @@ var createNew = function(options) {
   );
   // TODO: log to a logfile?
   childProcess.execSync(
-    'git clone --recursive ssh://git@project.marklogic.com:7999/nacw/muir.git ' +
+    'git clone --recursive https://project.marklogic.com/repo/scm/nacw/muir-react-reference.git' +
       config.mlAppName
   );
 
