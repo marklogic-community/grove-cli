@@ -24,7 +24,7 @@ confirmAppName(program.args[0])
       logfile: logfile
     });
     console.log(
-      chalk.blue(
+      chalk.cyan(
         "\nWhile we are provisioning your app, which might take a while, let's be sure we have all the information we need for the next step."
       )
     );
@@ -33,7 +33,7 @@ confirmAppName(program.args[0])
       .then(function(configs) {
         var config = Object.assign({}, configs[0], configs[1]);
         console.log(
-          chalk.blue(
+          chalk.cyan(
             '\nProvisioning your MarkLogic database. This might take a while ...'
           )
         );
@@ -42,13 +42,13 @@ confirmAppName(program.args[0])
           stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
         });
 
-        console.log(chalk.blue('\nLoading sample data'));
+        console.log(chalk.cyan('\nLoading sample data'));
         childProcess.execSync('./gradlew loadSampleData', {
           stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
         });
         process.chdir('..');
 
-        console.log(chalk.blue('\nRunning your application'));
+        console.log(chalk.cyan('\nRunning your application'));
         var runningApp = childProcess.spawn('npm', ['start']);
         runningApp.stdout.on('data', function(data) {
           console.log(data.toString());

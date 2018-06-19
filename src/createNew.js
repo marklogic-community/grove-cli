@@ -14,10 +14,10 @@ var createNew = function(options) {
   config.mlAppName = config.mlAppName || 'muir-app';
 
   console.log(
-    chalk.blue(
-      '\nGenerating a MUIR application named "' +
+    chalk.cyan(
+      '\nGenerating a MUIR Project named "' +
         config.mlAppName +
-        '" using React and a Node Express.js middle-tier.'
+        '" using the MUIR React UI, the MUIR Node middle-tier, and ml-gradle...'
     )
   );
   // TODO: log to a logfile?
@@ -33,7 +33,9 @@ var createNew = function(options) {
   var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
 
   console.log(
-    chalk.blue('\nProvisioning your React application and Node middle-tier')
+    chalk.cyan(
+      '\nProvisioning your Muir Project with all dependencies. This may take a minute...'
+    )
   );
   var npmInstallPromise = util
     .promisify(childProcess.exec)('npm install')
