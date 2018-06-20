@@ -32,23 +32,19 @@ confirmAppName(program.args[0])
     Promise.all([createNewPromise, runConfigPromise])
       .then(function(configs) {
         var config = Object.assign({}, configs[0], configs[1]);
-        console.log(
-          chalk.cyan(
-            '\nProvisioning your MarkLogic database. This might take a while ...'
-          )
-        );
+        console.log(chalk.cyan('\nProvisioning your MarkLogic database ...'));
         process.chdir('marklogic');
         childProcess.execSync('./gradlew mlDeploy', {
           stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
         });
 
-        console.log(chalk.cyan('\nLoading sample data'));
+        console.log(chalk.cyan('\nLoading sample data ...'));
         childProcess.execSync('./gradlew loadSampleData', {
           stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
         });
         process.chdir('..');
 
-        console.log(chalk.cyan('\nRunning your application'));
+        console.log(chalk.cyan('\nRunning your Project'));
         var runningApp = childProcess.spawn('npm', ['start']);
         runningApp.stdout.on('data', function(data) {
           console.log(data.toString());
@@ -58,7 +54,7 @@ confirmAppName(program.args[0])
         });
         runningApp.on('exit', function(code) {
           console.log(
-            chalk.red('Your application exited with code ' + code.toString())
+            chalk.red('Your Project exited with code ' + code.toString())
           );
         });
       })
