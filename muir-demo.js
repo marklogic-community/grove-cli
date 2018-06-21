@@ -15,15 +15,25 @@ var utils = require('./src/utils');
 // TODO: move logs into logs/
 var logfile = 'muir-demo.log';
 
-program.parse(process.argv);
+program
+  .option(
+    '-D, --development',
+    'Use bleeding-edge development version, if available'
+  )
+  .parse(process.argv);
+
 confirmAppName(program.args[0])
   .then(function(mlAppName) {
-    var createNewPromise = createNew({
-      config: {
-        mlAppName: mlAppName
-      },
-      logfile: logfile
-    });
+    let config = { mlAppName };
+    if (program.development) {
+      console.warn(
+        chalk.red(
+          '\nWARNING: Using the bleeding edge version to create your demo.'
+        )
+      );
+      config.development = program.development;
+    }
+    var createNewPromise = createNew({ config, logfile });
     console.log(
       chalk.cyan(
         "\nWhile we are provisioning your app, which might take a while, let's be sure we have all the information we need for the next step."

@@ -8,12 +8,26 @@ const confirmAppName = require('./src/confirmAppName');
 const createNew = require('./src/createNew');
 const utils = require('./src/utils');
 
-program.parse(process.argv);
-const mlAppName = program.args[0];
+program
+  .option(
+    '-D, --development',
+    'Use bleeding-edge development version, if available'
+  )
+  .parse(process.argv);
+var mlAppName = program.args[0];
 
 confirmAppName(program.args[0])
   .then(function(mlAppName) {
-    return createNew({ config: { mlAppName: mlAppName } });
+    let config = { mlAppName };
+    if (program.development) {
+      console.warn(
+        chalk.red(
+          '\nWARNING: Using the bleeding edge version to create your Muir Project.'
+        )
+      );
+      config.development = program.development;
+    }
+    return createNew({ config });
   })
   .then(function(config) {
     console.log(
