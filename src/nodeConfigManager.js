@@ -46,8 +46,10 @@ function propertify(config) {
 }
 
 function read() {
+  // TODO: make the directory where it is mounted discoverable
+  // also below
   return util
-    .promisify(fs.readFile)('server/.env')
+    .promisify(fs.readFile)('middle-tier/.env')
     .then(configify)
     .catch(function(error) {
       if (error.code === 'ENOENT') {
@@ -67,8 +69,10 @@ function merge(config) {
 }
 
 function forceWrite(config) {
+  // TODO: make the directory where it is mounted discoverable
+  // also above
   return util
-    .promisify(fs.writeFile)('server/.env', propertify(config))
+    .promisify(fs.writeFile)('middle-tier/.env', propertify(config))
     .then(function() {
       return config;
     })
