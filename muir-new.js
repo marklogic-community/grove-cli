@@ -31,27 +31,25 @@ confirmAppName(program.args[0])
   })
   .then(function(config) {
     console.log(
-      chalk.blue(
+      chalk.green(
         '\nCongratulations, you successfully generated a new MUIR application.'
       )
     );
 
-    console.log(
-      chalk.blue(
-        '\nYou can now start your application if you wish, though you will not be able to login unless you have also created a MarkLogic REST server on the default host and port (see below for details on using ml-gradle to do that).'
-      )
-    );
+    console.log(chalk.cyan('\nNow you can view your new Muir Project:'));
     console.log('\n    cd ' + config.mlAppName);
-    console.log('    npm install');
-    console.log('    npm start');
 
     console.log(
-      '\nYou may need to configure some application settings, such as hosts and port, first. You can do this using the `muir config` command:'
+      chalk.cyan(
+        '\nYou may need to configure some application settings, such as hosts and port. You can do this using the `muir config` command:'
+      )
     );
     console.log('\n    muir config');
 
     console.log(
-      '\nYou can invoke ml-gradle to deploy the configuration found in the `/marklogic` directory to MarkLogic by running:'
+      chalk.cyan(
+        '\nYou might already have a MarkLogic database, user, and REST server that you your Muir project will run against. Otherwise, you can invoke ml-gradle to deploy the configuration found in the `/marklogic` directory to MarkLogic by running:'
+      )
     );
     console.log('\n    cd marklogic');
     console.log('    ' + utils.gradleExecutable() + ' mlDeploy');
@@ -61,7 +59,18 @@ confirmAppName(program.args[0])
     );
     console.log('https://github.com/marklogic-community/ml-gradle');
 
-    console.log('\n');
+    console.log(
+      chalk.cyan(
+        '\nYou can also start your application if you wish, though you will also need a MarkLogic REST server running on the configured host and port (see above for details on using ml-gradle to create MarkLogic resources).'
+      )
+    );
+    console.log('\n    npm start');
+
+    console.log(
+      chalk.cyan(
+        '\nYou can log into your application using any MarkLogic user with sufficient permissions.'
+      )
+    );
 
     process.exit();
   })
