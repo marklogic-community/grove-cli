@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 require('./src/init');
 
-var program = require('commander');
-var fs = require('fs');
-var childProcess = require('child_process');
-var chalk = require('chalk');
+const program = require('commander');
+const fs = require('fs');
+const childProcess = require('child_process');
+const spawn = require('cross-spawn');
+const chalk = require('chalk');
 
 var confirmAppName = require('./src/confirmAppName');
 var createNew = require('./src/createNew');
@@ -45,7 +46,7 @@ confirmAppName(program.args[0])
         process.chdir('..');
 
         console.log(chalk.cyan('\nRunning your Project'));
-        var runningApp = childProcess.spawn('npm', ['start']);
+        const runningApp = spawn('npm', ['start']);
         runningApp.stdout.on('data', function(data) {
           console.log(data.toString());
         });
