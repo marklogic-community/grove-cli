@@ -3,7 +3,7 @@ const os = require('os');
 let gradleExeFile;
 
 function runningInBash() {
-  process.env.SHELL && process.env.SHELL.includes('bash');
+  return process.env.SHELL && process.env.SHELL.includes('bash');
 }
 
 function gradleExecutable() {
