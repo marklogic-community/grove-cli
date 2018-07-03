@@ -10,7 +10,7 @@ const chalk = require('chalk');
 var confirmAppName = require('./src/confirmAppName');
 var createNew = require('./src/createNew');
 var runConfig = require('./src/runConfig');
-var handleError = require('./src/utils').handleError;
+var utils = require('./src/utils');
 
 // TODO: move logs into logs/
 var logfile = 'muir-demo.log';
@@ -35,12 +35,12 @@ confirmAppName(program.args[0])
         var config = Object.assign({}, configs[0], configs[1]);
         console.log(chalk.cyan('\nProvisioning your MarkLogic database ...'));
         process.chdir('marklogic');
-        childProcess.execSync('./gradlew mlDeploy', {
+        childProcess.execSync(utils.gradleExecutable() + ' mlDeploy', {
           stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
         });
 
         console.log(chalk.cyan('\nLoading sample data ...'));
-        childProcess.execSync('./gradlew loadSampleData', {
+        childProcess.execSync(utils.gradleExecutable() + ' loadSampleData', {
           stdio: [0, fs.openSync(logfile, 'w'), fs.openSync(logfile, 'w')]
         });
         process.chdir('..');
@@ -59,6 +59,6 @@ confirmAppName(program.args[0])
           );
         });
       })
-      .catch(handleError);
+      .catch(utils.handleError);
   })
-  .catch(handleError);
+  .catch(utils.handleError);

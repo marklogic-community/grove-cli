@@ -1,4 +1,17 @@
-var chalk = require('chalk');
+const chalk = require('chalk');
+const os = require('os');
+let gradleExeFile;
+
+function gradleExecutable() {
+  if (!gradleExeFile) {
+    if (os.type() === 'Windows_NT') {
+      gradleExeFile = 'gradlew.bat';
+    } else {
+      gradleExeFile = './gradlew';
+    }
+  }
+  return gradleExeFile;
+}
 
 function handleError(error) {
   console.error(chalk.red('\nERROR'));
@@ -7,5 +20,6 @@ function handleError(error) {
 }
 
 module.exports = {
-  handleError: handleError
+  handleError: handleError,
+  gradleExecutable: gradleExecutable
 };

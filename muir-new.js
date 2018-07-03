@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 require('./src/init');
 
-var program = require('commander');
-var chalk = require('chalk');
+const program = require('commander');
+const chalk = require('chalk');
 
-var confirmAppName = require('./src/confirmAppName');
-var createNew = require('./src/createNew');
-var handleError = require('./src/utils').handleError;
+const confirmAppName = require('./src/confirmAppName');
+const createNew = require('./src/createNew');
+const utils = require('./src/utils');
 
 program.parse(process.argv);
-var mlAppName = program.args[0];
+const mlAppName = program.args[0];
 
 confirmAppName(program.args[0])
   .then(function(mlAppName) {
@@ -39,7 +39,9 @@ confirmAppName(program.args[0])
     console.log(
       '\nYou can invoke ml-gradle to deploy the configuration found in the `/marklogic` directory to MarkLogic by running:'
     );
-    console.log('\n    npm run mlDeploy');
+    console.log('\n    cd marklogic');
+    console.log('    ' + utils.gradleExecutable() + ' mlDeploy');
+    console.log('    cd ..');
     console.log(
       '\nOther ml-gradle tasks can be run from inside the `/marklogic` directory, as described in the ml-gradle documentation:'
     );
@@ -49,4 +51,4 @@ confirmAppName(program.args[0])
 
     process.exit();
   })
-  .catch(handleError);
+  .catch(utils.handleError);
