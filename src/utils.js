@@ -2,13 +2,13 @@ const chalk = require('chalk');
 const os = require('os');
 let gradleExeFile;
 
-function runningInBash() {
-  return process.env.SHELL && process.env.SHELL.includes('bash');
-}
+// function runningInBash() {
+//   return process.env.SHELL && process.env.SHELL.includes('bash');
+// }
 
 function gradleExecutable() {
   if (!gradleExeFile) {
-    if (os.type() === 'Windows_NT' && !runningInBash()) {
+    if (os.type() === 'Windows_NT') {
       gradleExeFile = 'gradlew.bat';
     } else {
       gradleExeFile = './gradlew';
