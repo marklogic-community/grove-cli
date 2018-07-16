@@ -14,7 +14,6 @@ program
     'Use bleeding-edge development version, if available'
   )
   .parse(process.argv);
-var mlAppName = program.args[0];
 
 confirmAppName(program.args[0])
   .then(function(mlAppName) {

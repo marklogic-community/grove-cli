@@ -28,7 +28,7 @@ function configify(properties) {
 
 // TODO: unit test
 function propertify(config) {
-  nodeConfigMap = {
+  const nodeConfigMap = {
     MUIR_APP_NAME: config.mlAppName,
     MUIR_ML_HOST: config.mlHost,
     MUIR_ML_REST_PORT: config.mlRestPort,

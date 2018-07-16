@@ -1,7 +1,7 @@
 var chalk = require('chalk');
 
-var prompt = function(question, options, callback) {
-  return new Promise(function(resolve, reject) {
+var prompt = function(question, options) {
+  return new Promise(function(resolve) {
     process.stdin.resume();
     process.stdout.write('\n' + chalk.green(question));
     if (options.default) {

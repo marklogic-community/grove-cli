@@ -16,7 +16,7 @@ function read() {
     .then(function(packageJson) {
       var config;
       var proxy = packageJson.proxy;
-      if (!!proxy) {
+      if (proxy) {
         var proxyUrl = new URL(proxy);
         config = {
           nodePort: proxyUrl.port,

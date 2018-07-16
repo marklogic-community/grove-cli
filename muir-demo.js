@@ -41,8 +41,7 @@ confirmAppName(program.args[0])
     );
     var runConfigPromise = runConfig({ logfile: logfile });
     Promise.all([createNewPromise, runConfigPromise])
-      .then(function(configs) {
-        var config = Object.assign({}, configs[0], configs[1]);
+      .then(function() {
         console.log(chalk.cyan('\nProvisioning your MarkLogic database ...'));
         process.chdir('marklogic');
         childProcess.execSync(utils.gradleExecutable() + ' mlDeploy', {
