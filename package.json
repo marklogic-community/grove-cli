@@ -9,7 +9,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "test": "npm run lint && echo \"Error: no test specified\" && exit 1"
+    "test": "npm run lint && echo \"Error: no test specified\" && exit 1",
+    "test:watch": "npm run lint && echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "MarkLogic",
