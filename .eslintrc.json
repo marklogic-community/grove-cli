@@ -5,9 +5,11 @@
   },
   "extends": [
     "plugin:prettier/recommended",
-    "eslint:recommended"
+    "eslint:recommended",
+    "plugin:node/recommended"
   ],
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "no-process-exit": "off"
   }
 }

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 require('./src/init');
 
 const program = require('commander');
