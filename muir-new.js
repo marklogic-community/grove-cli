@@ -66,7 +66,7 @@ confirmAppName(program.args[0])
 
     console.log(
       chalk.cyan(
-        '\nYou can log into your application using any MarkLogic user with sufficient permissions.'
+        '\nYou can log into your application using any MarkLogic user with sufficient permissions.\n'
       )
     );
 
