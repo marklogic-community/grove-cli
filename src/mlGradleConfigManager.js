@@ -22,17 +22,7 @@ function readFileLines() {
 }
 
 function read() {
-  return readFileLines()
-    .then(configify)
-    .catch(function(error) {
-      if (error.code === 'ENOENT') {
-        console.warn(
-          'WARNING: marklogic/gradle.properties file does not exist'
-        );
-        return {};
-      }
-      handleError(error);
-    });
+  return readFileLines().then(configify);
 }
 
 // TODO: write non-existent properties relevant to ml-gradle??
@@ -65,7 +55,16 @@ function merge(config) {
       return Object.assign(existingConfig, config);
     })
     .then(mergeWrite)
-    .catch(handleError);
+    .catch(error => {
+      if (error.code === 'ENOENT') {
+        console.warn(
+          'WARNING: marklogic/gradle.properties file does not exist. If you have a gradle installation, you will need to configure it manually.'
+        );
+        return {};
+      } else {
+        handleError(error);
+      }
+    });
 }
 
 module.exports = {
