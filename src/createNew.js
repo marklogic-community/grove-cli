@@ -22,7 +22,7 @@ var createNew = function(options) {
   );
   // TODO: log to a logfile?
   childProcess.execSync(
-    'git clone --recursive https://project.marklogic.com/repo/scm/nacw/muir-react-reference.git ' +
+    'git clone --recurse-submodules https://project.marklogic.com/repo/scm/nacw/muir-react-reference.git ' +
       (config.development ? '-b development ' : '') +
       config.mlAppName
   );
