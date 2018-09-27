@@ -59,6 +59,13 @@ confirmAppName(program.args[0])
 
     console.log(
       chalk.cyan(
+        '\nRun the following to install javascript dependencies using the npm package manager:'
+      )
+    );
+    console.log('\n    npm install');
+
+    console.log(
+      chalk.cyan(
         '\nYou can also start your application if you wish, though you will also need a MarkLogic REST server running on the configured host and port (see above for details on using ml-gradle to create MarkLogic resources).'
       )
     );

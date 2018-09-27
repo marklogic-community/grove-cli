@@ -1,4 +1,5 @@
 require('./src/init');
+var util = require('util');
 
 const program = require('commander');
 const fs = require('fs');
@@ -32,7 +33,24 @@ confirmAppName(program.args[0])
       );
       config.development = program.development;
     }
-    var createNewPromise = createNew({ config, logfile });
+    var createNewPromise = createNew({ config, logfile }).then(() => {
+      return util
+        .promisify(childProcess.exec)('npm install')
+        .then(function(stdout, stderr) {
+          fs.appendFile(
+            logfile,
+            '\nlogging stdout:\n' + JSON.stringify(stdout),
+            function(error) {
+              if (error) throw error;
+            }
+          );
+          fs.appendFile(logfile, '\nlogging stderr:\n' + stderr, function(
+            error
+          ) {
+            if (error) throw error;
+          });
+        });
+    });
     console.log(
       chalk.cyan(
         "\nWhile we are provisioning your app, which might take a while, let's be sure we have all the information we need for the next step."

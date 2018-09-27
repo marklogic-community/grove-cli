@@ -1,5 +1,3 @@
-var fs = require('fs');
-var util = require('util');
 var childProcess = require('child_process');
 var chalk = require('chalk');
 
@@ -9,7 +7,7 @@ var handleError = require('./utils').handleError;
 
 var createNew = function(options) {
   options = options || {};
-  var logfile = options.logfile || 'muir-new.log';
+  // var logfile = options.logfile || 'muir-new.log';
   var config = options.config || {};
   config.mlAppName = config.mlAppName || 'muir-app';
 
@@ -38,22 +36,8 @@ var createNew = function(options) {
       '\nProvisioning your Muir Project with all dependencies. This may take a minute...'
     )
   );
-  var npmInstallPromise = util
-    .promisify(childProcess.exec)('npm install')
-    .then(function(stdout, stderr) {
-      fs.appendFile(logfile, '\nlogging stdout:\n' + stdout, function(error) {
-        if (error) throw error;
-      });
-      fs.appendFile(logfile, '\nlogging stderr:\n' + stderr, function(error) {
-        if (error) throw error;
-      });
-    });
 
-  return Promise.all([
-    writeNodeConfigPromise,
-    writeMlGradleConfigPromise,
-    npmInstallPromise
-  ])
+  return Promise.all([writeNodeConfigPromise, writeMlGradleConfigPromise])
     .then(function() {
       return config;
     })
