@@ -32,7 +32,6 @@ function buildConfigFromUserInput(config) {
 
 const runConfig = function runConfig(options) {
   options = options || {};
-  // const logfile = options.logfile || 'muir-new.log';
   let config = options.config || {};
 
   return buildConfigFromUserInput(config)

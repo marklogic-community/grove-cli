@@ -7,7 +7,6 @@ var handleError = require('./utils').handleError;
 
 var createNew = function(options) {
   options = options || {};
-  // var logfile = options.logfile || 'muir-new.log';
   var config = options.config || {};
   config.mlAppName = config.mlAppName || 'muir-app';
 
@@ -18,7 +17,7 @@ var createNew = function(options) {
         '" using the MUIR React UI, the MUIR Node middle-tier, and ml-gradle...'
     )
   );
-  // TODO: log to a logfile?
+  // TODO: log to winston?
   childProcess.execSync(
     'git clone --recurse-submodules https://project.marklogic.com/repo/scm/nacw/muir-react-reference.git ' +
       (config.development ? '-b development ' : '') +
