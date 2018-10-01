@@ -1,40 +1,61 @@
-var childProcess = require('child_process');
-var chalk = require('chalk');
+const childProcess = require('child_process');
+const chalk = require('chalk');
+const inquirer = require('inquirer');
 
-var nodeConfigManager = require('./nodeConfigManager');
-var mlGradleConfigManager = require('./mlGradleConfigManager');
-var handleError = require('./utils').handleError;
+const nodeConfigManager = require('./nodeConfigManager');
+const mlGradleConfigManager = require('./mlGradleConfigManager');
+const handleError = require('./utils').handleError;
 
-var createNew = function(options) {
+const createNew = function(options) {
   options = options || {};
-  var config = options.config || {};
+  const config = options.config || {};
   config.mlAppName = config.mlAppName || 'muir-app';
 
-  console.log(
-    chalk.cyan(
-      '\nGenerating a MUIR Project named "' +
-        config.mlAppName +
-        '" using the MUIR React UI, the MUIR Node middle-tier, and ml-gradle...'
-    )
-  );
-  // TODO: log to winston?
-  childProcess.execSync(
-    'git clone --recurse-submodules https://project.marklogic.com/repo/scm/nacw/muir-react-reference.git ' +
-      (config.development ? '-b development ' : '') +
-      config.mlAppName
-  );
+  const availableTemplates = {
+    React:
+      'https://project.marklogic.com/repo/scm/nacw/muir-react-template.git',
+    Vue: 'https://project.marklogic.com/repo/scm/~gjosten/muir-vue-template.git'
+  };
 
-  // Any subsequent actions should happen in context of the new app
-  process.chdir(config.mlAppName);
+  return inquirer
+    .prompt([
+      {
+        name: 'templateName',
+        type: 'list',
+        message:
+          'Do you want to create your Grove project with the React or the Vue UI?',
+        choices: Object.keys(availableTemplates)
+      }
+    ])
+    .then(({ templateName }) => {
+      console.log(
+        chalk.cyan(
+          `\nGenerating a Grove Project named "${
+            config.mlAppName
+          }" using the Grove ${templateName} UI, the Grove Node middle-tier, and ml-gradle...`
+        )
+      );
 
-  var writeNodeConfigPromise = nodeConfigManager.merge(config);
-  var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
+      const templateRepoUrl = availableTemplates[templateName];
+      // TODO: log to winston?
+      childProcess.execSync(
+        `git clone --recurse-submodules ${templateRepoUrl} ${
+          config.development ? '-b development ' : ''
+        } ${config.mlAppName}`
+      );
 
-  return Promise.all([writeNodeConfigPromise, writeMlGradleConfigPromise])
-    .then(function() {
-      return config;
-    })
-    .catch(handleError);
+      // Any subsequent actions should happen in context of the new app
+      process.chdir(config.mlAppName);
+
+      var writeNodeConfigPromise = nodeConfigManager.merge(config);
+      var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
+
+      return Promise.all([writeNodeConfigPromise, writeMlGradleConfigPromise])
+        .then(function() {
+          return config;
+        })
+        .catch(handleError);
+    });
 };
 
 module.exports = createNew;
