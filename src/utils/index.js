@@ -1,5 +1,5 @@
-const chalk = require('chalk');
 const os = require('os');
+const logger = require('./logger');
 let gradleExeFile;
 
 // function runningInBash() {
@@ -18,12 +18,12 @@ function gradleExecutable() {
 }
 
 function handleError(error) {
-  console.error(chalk.red('\nERROR'));
-  console.error(error);
+  logger.error(error);
   process.exit(1);
 }
 
 module.exports = {
-  handleError: handleError,
-  gradleExecutable: gradleExecutable
+  handleError,
+  gradleExecutable,
+  logger
 };
