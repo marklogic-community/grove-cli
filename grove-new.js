@@ -39,10 +39,10 @@ confirmAppName(program.args[0])
 
     console.log(
       chalk.cyan(
-        '\nYou may need to configure some application settings, such as hosts and port. You can do this using the `muir config` command:'
+        '\nYou may need to configure some application settings, such as hosts and port. You can do this using the `grove config` command:'
       )
     );
-    console.log('\n    muir config');
+    console.log('\n    grove config');
 
     console.log(
       chalk.cyan(

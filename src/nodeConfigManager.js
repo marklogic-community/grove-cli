@@ -6,13 +6,13 @@ var handleError = require('./utils').handleError;
 // similar to mlGradleConfigManager
 function configify(properties) {
   var configMap = {
-    MUIR_APP_NAME: 'mlAppName',
-    MUIR_ML_HOST: 'mlHost',
-    MUIR_ML_REST_PORT: 'mlRestPort',
-    MUIR_APP_PORT: 'nodePort',
-    MUIR_SESSION_SECRET: 'sessionSecret',
-    MUIR_APP_USERS_ONLY: 'appUsersOnly',
-    MUIR_DISALLOW_UPDATES: 'disallowUpdates'
+    GROVE_APP_NAME: 'mlAppName',
+    GROVE_ML_HOST: 'mlHost',
+    GROVE_ML_REST_PORT: 'mlRestPort',
+    GROVE_APP_PORT: 'nodePort',
+    GROVE_SESSION_SECRET: 'sessionSecret',
+    GROVE_APP_USERS_ONLY: 'appUsersOnly',
+    GROVE_DISALLOW_UPDATES: 'disallowUpdates'
   };
   return properties
     .toString()
@@ -29,13 +29,13 @@ function configify(properties) {
 // TODO: unit test
 function propertify(config) {
   const nodeConfigMap = {
-    MUIR_APP_NAME: config.mlAppName,
-    MUIR_ML_HOST: config.mlHost,
-    MUIR_ML_REST_PORT: config.mlRestPort,
-    MUIR_APP_PORT: config.nodePort,
-    MUIR_SESSION_SECRET: config.sessionSecret,
-    MUIR_APP_USERS_ONLY: config.appUsersOnly,
-    MUIR_DISALLOW_UPDATES: config.disallowUpdates
+    GROVE_APP_NAME: config.mlAppName,
+    GROVE_ML_HOST: config.mlHost,
+    GROVE_ML_REST_PORT: config.mlRestPort,
+    GROVE_APP_PORT: config.nodePort,
+    GROVE_SESSION_SECRET: config.sessionSecret,
+    GROVE_APP_USERS_ONLY: config.appUsersOnly,
+    GROVE_DISALLOW_UPDATES: config.disallowUpdates
   };
   return Object.keys(nodeConfigMap).reduce(function(properties, key) {
     if (!nodeConfigMap[key]) {

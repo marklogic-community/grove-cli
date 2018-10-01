@@ -9,12 +9,13 @@ const handleError = require('./utils').handleError;
 const createNew = function(options) {
   options = options || {};
   const config = options.config || {};
-  config.mlAppName = config.mlAppName || 'muir-app';
+  config.mlAppName = config.mlAppName || 'grove-app';
 
   const availableTemplates = {
     React:
-      'https://project.marklogic.com/repo/scm/nacw/muir-react-template.git',
-    Vue: 'https://project.marklogic.com/repo/scm/~gjosten/muir-vue-template.git'
+      'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git',
+    Vue:
+      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
   };
 
   return inquirer

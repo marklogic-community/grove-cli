@@ -1,10 +1,10 @@
 {
-  "name": "muir-cli",
+  "name": "grove-cli",
   "version": "0.10.0-alpha",
-  "description": "A command-line tool for generating Muir applications.",
+  "description": "A command-line tool for generating Grove applications.",
   "main": "index.js",
   "bin": {
-    "muir": "./index.js"
+    "grove": "./index.js"
   },
   "scripts": {
     "lint": "eslint .",
@@ -14,7 +14,7 @@
   },
   "keywords": [
     "MarkLogic",
-    "MUIR",
+    "Grove",
     "UI",
     "app generator"
   ],

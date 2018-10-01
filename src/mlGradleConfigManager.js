@@ -26,7 +26,7 @@ function read() {
 }
 
 // TODO: write non-existent properties relevant to ml-gradle??
-// TODO: think about a section dedicated to muir, might be easier
+// TODO: think about a section dedicated to grove, might be easier
 function mergeWrite(config) {
   let configKeys = Object.keys(config);
   const overwritePropertiesWithConfig = line => {
