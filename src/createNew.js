@@ -30,12 +30,6 @@ var createNew = function(options) {
   var writeNodeConfigPromise = nodeConfigManager.merge(config);
   var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
 
-  console.log(
-    chalk.cyan(
-      '\nProvisioning your Muir Project with all dependencies. This may take a minute...'
-    )
-  );
-
   return Promise.all([writeNodeConfigPromise, writeMlGradleConfigPromise])
     .then(function() {
       return config;
