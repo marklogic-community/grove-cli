@@ -1,18 +1,12 @@
 var util = require('util');
 var fs = require('fs');
-var handleError = require('./utils').handleError;
+
+const utils = require('../../utils');
 var URL = require('url').URL;
 
-function getPackageJson() {
-  return util
-    .promisify(fs.readFile)('ui/package.json')
-    .then(function(packageJsonBuffer) {
-      return JSON.parse(packageJsonBuffer.toString());
-    });
-}
-
 function read() {
-  return getPackageJson()
+  return utils
+    .getPackageJson('ui')
     .then(function(packageJson) {
       var config;
       var proxy = packageJson.proxy;
@@ -27,11 +21,12 @@ function read() {
       }
       return config;
     })
-    .catch(handleError);
+    .catch(utils.handleError);
 }
 
 function forceWrite(config) {
-  return getPackageJson()
+  return utils
+    .getPackageJson('ui')
     .then(function(packageJson) {
       packageJson.proxy = 'http://' + config.nodeHost + ':' + config.nodePort;
       return util.promisify(
@@ -41,7 +36,7 @@ function forceWrite(config) {
     .then(function() {
       return config;
     })
-    .catch(handleError);
+    .catch(utils.handleError);
 }
 
 function merge(config) {
@@ -54,7 +49,7 @@ function merge(config) {
       return Object.assign(defaultConfig, existingConfig, config);
     })
     .then(forceWrite)
-    .catch(handleError);
+    .catch(utils.handleError);
 }
 
 module.exports = {
