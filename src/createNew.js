@@ -13,9 +13,9 @@ const createNew = function(options) {
 
   const availableTemplates = {
     React:
-      'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git',
+      'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git -b GROVE-149-add-vue-to-cli',
     Vue:
-      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
+      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git -b GROVE-149-add-vue-to-cli'
   };
 
   return inquirer
