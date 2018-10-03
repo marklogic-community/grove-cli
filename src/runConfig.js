@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 
-const nodeConfigManager = require('./nodeConfigManager');
-const mlGradleConfigManager = require('./mlGradleConfigManager');
+const nodeConfigManager = require('./managers/config/grove-node');
+const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 
 const utils = require('./utils');
 const logger = utils.logger;

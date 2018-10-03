@@ -2,8 +2,8 @@ const childProcess = require('child_process');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 
-const nodeConfigManager = require('./nodeConfigManager');
-const mlGradleConfigManager = require('./mlGradleConfigManager');
+const nodeConfigManager = require('./managers/config/grove-node');
+const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 const handleError = require('./utils').handleError;
 
 const createNew = function(options) {

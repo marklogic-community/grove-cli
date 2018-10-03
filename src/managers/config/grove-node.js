@@ -1,6 +1,6 @@
 var util = require('util');
 var fs = require('fs');
-var handleError = require('./utils').handleError;
+var handleError = require('../../utils').handleError;
 
 // TODO: unit test
 // similar to mlGradleConfigManager
