@@ -38,58 +38,57 @@ confirmAppName(program.args[0])
       );
       config.development = program.development;
     }
-    var createNewPromise = createNew({ config })
-      .then(() => {
-        return util
-          .promisify(childProcess.exec)('npm install')
-          .then(output => log('npm install', output));
-      })
-      .catch(utils.handleError);
+    return createNew({ config });
+  })
+  .then(() => {
+    const npmInstallPromise = util
+      .promisify(childProcess.exec)('npm install')
+      .then(output => log('npm install', output));
 
     console.log(
       chalk.cyan(
         "\nWhile we are provisioning your app, which might take a while, let's be sure we have all the information we need for the next step."
       )
     );
-    var runConfigPromise = runConfig();
-    Promise.all([createNewPromise, runConfigPromise])
-      .then(function() {
-        console.log(chalk.cyan('\nProvisioning your MarkLogic database ...'));
-        process.chdir('marklogic');
-        return util.promisify(
-          childProcess.exec
-        )(utils.gradleExecutable() + ' mlDeploy');
-      })
-      .then(output => log('mlDeploy', output))
-      .then(() => {
-        console.log(chalk.cyan('\nLoading sample data ...'));
-        return util.promisify(childProcess.exec)(
-          utils.gradleExecutable() + ' loadSampleData'
-        );
-      })
-      .then(output => log('loadSampleData', output))
-      .then(() => {
-        process.chdir('..');
+    const runConfigPromise = runConfig();
 
-        console.log(
-          chalk.cyan(
-            '\nRunning your project. See grove-cli.log for logs. Hit <Ctrl-C> to terminate.'
-          )
-        );
-        const runningApp = spawn('npm', ['start']);
-        runningApp.stdout.on('data', function(data) {
-          logger.info(data.toString());
-        });
-        runningApp.stderr.on('data', function(data) {
-          logger.error(data.toString());
-        });
-        runningApp.on('exit', function(code) {
-          console.log(
-            chalk.red('Your Project exited with code ' + code.toString())
-          );
-          process.exit(1);
-        });
-      })
-      .catch(utils.handleError);
+    return Promise.all([npmInstallPromise, runConfigPromise]);
+  })
+  .then(() => {
+    console.log(chalk.cyan('\nProvisioning your MarkLogic database ...'));
+    process.chdir('marklogic');
+    return util.promisify(childProcess.exec)(
+      utils.gradleExecutable() + ' mlDeploy'
+    );
+  })
+  .then(output => log('mlDeploy', output))
+  .then(() => {
+    console.log(chalk.cyan('\nLoading sample data ...'));
+    return util.promisify(childProcess.exec)(
+      utils.gradleExecutable() + ' loadSampleData'
+    );
+  })
+  .then(output => log('loadSampleData', output))
+  .then(() => {
+    process.chdir('..');
+
+    console.log(
+      chalk.cyan(
+        '\nRunning your project. See grove-cli.log for logs. Hit <Ctrl-C> to terminate.'
+      )
+    );
+    const runningApp = spawn('npm', ['start']);
+    runningApp.stdout.on('data', function(data) {
+      logger.info(data.toString());
+    });
+    runningApp.stderr.on('data', function(data) {
+      logger.error(data.toString());
+    });
+    runningApp.on('exit', function(code) {
+      console.log(
+        chalk.red('Your Project exited with code ' + code.toString())
+      );
+      process.exit(1);
+    });
   })
   .catch(utils.handleError);
