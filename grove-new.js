@@ -20,7 +20,7 @@ confirmAppName(program.args[0])
     if (program.development) {
       console.warn(
         chalk.red(
-          '\nWARNING: Using the bleeding edge version to create your Muir Project.'
+          '\nWARNING: Using the bleeding edge version to create your Grove Project.'
         )
       );
       config.development = program.development;
@@ -30,11 +30,11 @@ confirmAppName(program.args[0])
   .then(function(config) {
     console.log(
       chalk.green(
-        '\nCongratulations, you successfully generated a new MUIR application.'
+        '\nCongratulations, you successfully generated a new Grove project.'
       )
     );
 
-    console.log(chalk.cyan('\nNow you can view your new Muir Project:'));
+    console.log(chalk.cyan('\nNow you can view your new Grove Project:'));
     console.log('\n    cd ' + config.mlAppName);
 
     console.log(
@@ -46,7 +46,7 @@ confirmAppName(program.args[0])
 
     console.log(
       chalk.cyan(
-        '\nYou might already have a MarkLogic database, user, and REST server that you your Muir project will run against. Otherwise, you can invoke ml-gradle to deploy the configuration found in the `/marklogic` directory to MarkLogic by running:'
+        '\nYou might already have a MarkLogic database, user, and REST server that you your Grove project will run against. Otherwise, you can invoke ml-gradle to deploy the configuration found in the `/marklogic` directory to MarkLogic by running:'
       )
     );
     console.log('\n    cd marklogic');
