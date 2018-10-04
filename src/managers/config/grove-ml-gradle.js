@@ -41,7 +41,7 @@ function mergeWrite(config) {
   return readFileLines()
     .then(propertyLines => propertyLines.map(overwritePropertiesWithConfig))
     .then(newPropertyLines => {
-      util.promisify(fs.writeFile)(
+      return util.promisify(fs.writeFile)(
         'marklogic/gradle.properties',
         newPropertyLines.join('\n')
       );
