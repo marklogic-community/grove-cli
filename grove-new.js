@@ -8,23 +8,19 @@ const createNew = require('./src/createNew');
 const utils = require('./src/utils');
 
 program
+  .option('-C, --confirmAppName', 'Confirm appName without interactive prompt')
   .option(
-    '-D, --development',
-    'Use bleeding-edge development version, if available'
+    '-v, --templateVersion <templateVersion>',
+    'Use a specific version of the template, if available'
   )
   .parse(process.argv);
 
-confirmAppName(program.args[0])
-  .then(function(mlAppName) {
-    let config = { mlAppName };
-    if (program.development) {
-      console.warn(
-        chalk.red(
-          '\nWARNING: Using the bleeding edge version to create your Grove Project.'
-        )
-      );
-      config.development = program.development;
-    }
+confirmAppName(program)
+  .then(mlAppName => {
+    const config = {
+      mlAppName,
+      templateVersion: program.templateVersion
+    };
     return createNew({ config });
   })
   .then(function(config) {

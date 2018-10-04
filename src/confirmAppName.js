@@ -1,7 +1,10 @@
 const inquirer = require('inquirer');
 
-var confirmAppName = function(mlAppName) {
-  mlAppName = mlAppName || 'grove-app';
+const confirmAppName = program => {
+  const mlAppName = program.args[0] || 'grove-app';
+  if (program.confirmAppName) {
+    return Promise.resolve(mlAppName);
+  }
   return inquirer
     .prompt([
       {

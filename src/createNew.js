@@ -13,9 +13,9 @@ const createNew = function(options) {
 
   const availableTemplates = {
     React:
-      'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git -b GROVE-149-add-vue-to-cli',
+      'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git',
     Vue:
-      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git -b GROVE-149-add-vue-to-cli'
+      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
   };
 
   return inquirer
@@ -41,7 +41,7 @@ const createNew = function(options) {
       // TODO: log to winston?
       childProcess.execSync(
         `git clone --recurse-submodules ${templateRepoUrl} ${
-          config.development ? '-b development ' : ''
+          config.templateVersion ? `-b ${config.templateVersion} ` : ''
         } ${config.mlAppName}`
       );
 

@@ -1,4 +1,4 @@
-# MarkLogic Grove Command Line Tool
+# MarkLogic Grove CLI (Command Line Interface)
 
 ## Installation
 
@@ -22,11 +22,21 @@ Use it by passing your new application name.
 
     grove new my-app
 
+You can see options for this command by running:
+
+    grove new --help
+
+For example, you can pass a `--templateVersion`. This corresponds to a branch or tag name in the template's git repository now - though, in the future, it may refer to some other named template version.
+
 ### grove config
 
 Generates or modifies settings for your application, based on prompts. This is the preferred way to manage configuration files. We plan to add additional functionality to it soon. **Run this command from the parent directory of your generated project.**
 
     grove config
+
+You can see options for this command by running:
+
+    grove config --help
 
 ### grove demo
 
@@ -35,3 +45,9 @@ Generates or modifies settings for your application, based on prompts. This is t
 Generates a new application (as if you ran `grove new`), prompts for some configuration (as if you ran `grove config`), configures MarkLogic, loads sample data, and starts a Grove middle-tier and Webpack development server for front-end assets.
 
     grove demo my-demo
+
+You can see options for this command by running:
+
+    grove demo --help
+
+For example, you can pass a `--templateVersion`. This corresponds to a branch or tag name in the template's git repository now - though, in the future, it may refer to some other named template version.
