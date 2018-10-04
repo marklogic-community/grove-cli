@@ -6,18 +6,20 @@ const nodeConfigManager = require('./managers/config/grove-node');
 const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 const handleError = require('./utils').handleError;
 
-const createNew = function(options) {
-  options = options || {};
-  const config = options.config || {};
-  config.mlAppName = config.mlAppName || 'grove-app';
+const availableTemplates = {
+  React: 'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git',
+  Vue: 'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
+};
 
-  const availableTemplates = {
-    React:
-      'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git',
-    Vue:
-      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
-  };
-
+const identifyTemplateName = templateName => {
+  if (templateName) {
+    if (availableTemplates[templateName]) {
+      return Promise.resolve(templateName);
+    }
+    console.log(
+      chalk.red(`\nIgnoring the unknown templateName "${templateName}".`)
+    );
+  }
   return inquirer
     .prompt([
       {
@@ -28,35 +30,43 @@ const createNew = function(options) {
         choices: Object.keys(availableTemplates)
       }
     ])
-    .then(({ templateName }) => {
-      console.log(
-        chalk.cyan(
-          `\nGenerating a Grove Project named "${
-            config.mlAppName
-          }" using the Grove ${templateName} UI, the Grove Node middle-tier, and ml-gradle...`
-        )
-      );
+    .then(({ templateName }) => templateName);
+};
 
-      const templateRepoUrl = availableTemplates[templateName];
-      // TODO: log to winston?
-      childProcess.execSync(
-        `git clone --recurse-submodules ${templateRepoUrl} ${
-          config.templateVersion ? `-b ${config.templateVersion} ` : ''
-        } ${config.mlAppName}`
-      );
+const createNew = function(options) {
+  options = options || {};
+  const config = options.config || {};
+  config.mlAppName = config.mlAppName || 'grove-app';
 
-      // Any subsequent actions should happen in context of the new app
-      process.chdir(config.mlAppName);
+  return identifyTemplateName(config.templateName).then(templateName => {
+    console.log(
+      chalk.cyan(
+        `\nGenerating a Grove Project named "${
+          config.mlAppName
+        }" using the Grove ${templateName} UI, the Grove Node middle-tier, and ml-gradle...`
+      )
+    );
 
-      var writeNodeConfigPromise = nodeConfigManager.merge(config);
-      var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
+    const templateRepoUrl = availableTemplates[templateName];
+    // TODO: log to winston?
+    childProcess.execSync(
+      `git clone --recurse-submodules ${templateRepoUrl} ${
+        config.templateVersion ? `-b ${config.templateVersion} ` : ''
+      } ${config.mlAppName}`
+    );
 
-      return Promise.all([writeNodeConfigPromise, writeMlGradleConfigPromise])
-        .then(function() {
-          return config;
-        })
-        .catch(handleError);
-    });
+    // Any subsequent actions should happen in context of the new app
+    process.chdir(config.mlAppName);
+
+    var writeNodeConfigPromise = nodeConfigManager.merge(config);
+    var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
+
+    return Promise.all([writeNodeConfigPromise, writeMlGradleConfigPromise])
+      .then(function() {
+        return config;
+      })
+      .catch(handleError);
+  });
 };
 
 module.exports = createNew;

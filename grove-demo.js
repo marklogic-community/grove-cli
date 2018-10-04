@@ -23,6 +23,10 @@ const log = (command, info) => {
 program
   .option('-C, --confirmAppName', 'Confirm appName without interactive prompt')
   .option(
+    '-n, --templateName <templateName>',
+    'Specify a templateName. Current choices: React, Vue'
+  )
+  .option(
     '-v, --templateVersion <templateVersion>',
     'Use a specific version of the template, if available'
   )
@@ -45,6 +49,7 @@ confirmAppName(program)
   .then(mlAppName => {
     const config = {
       mlAppName,
+      templateName: program.templateName,
       templateVersion: program.templateVersion
     };
     return createNew({ config });
