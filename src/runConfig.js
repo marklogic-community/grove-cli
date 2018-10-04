@@ -12,30 +12,36 @@ const configManagers = {
 };
 
 function buildConfigFromUserInput(config) {
-  return inquirer
-    .prompt([
-      {
-        name: 'mlHost',
-        message: 'What host is your instance of MarkLogic running on?',
-        default: 'localhost'
-        // TODO: validate hostname?
-      },
-      {
-        name: 'mlRestPort',
-        message: 'What port do you want to use for your MarkLogic REST server?',
-        default: 8063
-        // TODO: validate port; maybe even ping hostname + port?
-      },
-      {
-        name: 'nodePort',
-        message: 'What port do you want your Node server to listen on?',
-        default: 9003
-        // TODO: validate port
-      }
-    ])
-    .then(answers => {
-      return Object.assign(config, answers);
-    });
+  const questions = [
+    {
+      name: 'mlHost',
+      message: 'What host is your instance of MarkLogic running on?',
+      default: 'localhost'
+      // TODO: validate hostname?
+    },
+    {
+      name: 'mlRestPort',
+      message: 'What port do you want to use for your MarkLogic REST server?',
+      default: 8063
+      // TODO: validate port; maybe even ping hostname + port?
+    },
+    {
+      name: 'nodePort',
+      message: 'What port do you want your Grove Node server to listen on?',
+      default: 9003
+      // TODO: validate port
+    }
+  ];
+  // TODO: read current config on disk first and use it for defaults and
+  // warn if there is a conflict
+  return (
+    inquirer
+      // only ask questions without answers already in config
+      .prompt(questions.filter(question => !config[question.name]))
+      .then(answers => {
+        return Object.assign(config, answers);
+      })
+  );
 }
 
 const locateUIConfigManager = () => {
@@ -67,7 +73,7 @@ const runConfig = function runConfig(options) {
   let uiConfigManager;
   return locateUIConfigManager()
     .then(manager => (uiConfigManager = manager))
-    .then(buildConfigFromUserInput.bind(config))
+    .then(buildConfigFromUserInput.bind(this, config))
     .then(newConfig => {
       return Promise.all([
         nodeConfigManager.merge(newConfig),
