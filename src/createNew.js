@@ -74,6 +74,12 @@ const createNew = function(options) {
     // Any subsequent actions should happen in context of the new app
     process.chdir(config.mlAppName);
 
+    childProcess.execSync('git remote rename origin upstream');
+
+    childProcess.execSync(
+      'git submodule foreach "git remote rename origin upstream"'
+    );
+
     var writeNodeConfigPromise = nodeConfigManager.merge(config);
     var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
 
