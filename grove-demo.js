@@ -42,16 +42,16 @@ program
     '-p, --nodePort <nodePort>',
     'The port on which your Grove Node server will listen'
   )
+  .option(
+    '--keepGit',
+    'Maintain upstream git remotes pointing to Grove core repos in the new project. Note that this option may be removed in future.'
+  )
   .parse(process.argv);
 
 confirmAppName(program)
   .then(mlAppName => {
-    const config = {
-      mlAppName,
-      templateID: program.template,
-      templateRelease: program.templateRelease
-    };
-    return createNew({ config });
+    const config = { mlAppName };
+    return createNew({ config, program });
   })
   .then(() => {
     const npmInstallPromise = util

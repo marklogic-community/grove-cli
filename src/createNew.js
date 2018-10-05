@@ -50,10 +50,11 @@ const identifyTemplate = templateID => {
 
 const createNew = function(options) {
   options = options || {};
+  const program = options.program;
   const config = options.config || {};
   config.mlAppName = config.mlAppName || 'grove-app';
 
-  return identifyTemplate(config.templateID).then(template => {
+  return identifyTemplate(program.template).then(template => {
     console.log(
       chalk.cyan(
         `\nGenerating a Grove Project named "${
@@ -67,18 +68,25 @@ const createNew = function(options) {
     // TODO: log to winston?
     childProcess.execSync(
       `git clone --recurse-submodules ${template.repo} ${
-        config.templateRelease ? `-b ${config.templateRelease} ` : ''
+        program.templateRelease ? `-b ${program.templateRelease} ` : ''
       } ${config.mlAppName}`
     );
 
     // Any subsequent actions should happen in context of the new app
     process.chdir(config.mlAppName);
 
-    childProcess.execSync('git remote rename origin upstream');
+    if (program.keepGit) {
+      childProcess.execSync('git remote rename origin upstream');
 
-    childProcess.execSync(
-      'git submodule foreach "git remote rename origin upstream"'
-    );
+      childProcess.execSync(
+        'git submodule foreach "git remote rename origin upstream"'
+      );
+    } else {
+      childProcess.execSync('rm -rf .git .gitmodules */.git');
+      childProcess.execSync('git init');
+      childProcess.execSync('git add .');
+      childProcess.execSync('git commit -m "Initial commit by grove cli"');
+    }
 
     var writeNodeConfigPromise = nodeConfigManager.merge(config);
     var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
