@@ -6,31 +6,46 @@ const nodeConfigManager = require('./managers/config/grove-node');
 const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 const handleError = require('./utils').handleError;
 
-const availableTemplates = {
-  React: 'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git',
-  Vue: 'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
-};
+const availableTemplates = [
+  {
+    id: 'grove-react-template',
+    name: 'React',
+    repo: 'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git'
+  },
+  {
+    id: 'grove-vue-template',
+    name: 'Vue',
+    repo:
+      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
+  }
+];
 
-const identifyTemplateName = templateName => {
-  if (templateName) {
-    if (availableTemplates[templateName]) {
-      return Promise.resolve(templateName);
+const identifyTemplate = templateID => {
+  if (templateID) {
+    const template = availableTemplates.find(availableTemplate => {
+      return availableTemplate.id === templateID;
+    });
+    if (template) {
+      return Promise.resolve(template);
     }
-    console.log(
-      chalk.red(`\nIgnoring the unknown templateName "${templateName}".`)
-    );
+    console.log(chalk.red(`\nIgnoring the unknown template "${templateID}".`));
   }
   return inquirer
     .prompt([
       {
-        name: 'templateName',
+        name: 'template',
         type: 'list',
         message:
           'Do you want to create your Grove project with the React or the Vue UI?',
-        choices: Object.keys(availableTemplates)
+        choices: availableTemplates.map(template => {
+          return {
+            name: template.name,
+            value: template
+          };
+        })
       }
     ])
-    .then(({ templateName }) => templateName);
+    .then(({ template }) => template);
 };
 
 const createNew = function(options) {
@@ -38,20 +53,21 @@ const createNew = function(options) {
   const config = options.config || {};
   config.mlAppName = config.mlAppName || 'grove-app';
 
-  return identifyTemplateName(config.templateName).then(templateName => {
+  return identifyTemplate(config.templateID).then(template => {
     console.log(
       chalk.cyan(
         `\nGenerating a Grove Project named "${
           config.mlAppName
-        }" using the Grove ${templateName} UI, the Grove Node middle-tier, and ml-gradle...`
+        }" using the Grove ${
+          template.name
+        } UI, the Grove Node middle-tier, and ml-gradle...`
       )
     );
 
-    const templateRepoUrl = availableTemplates[templateName];
     // TODO: log to winston?
     childProcess.execSync(
-      `git clone --recurse-submodules ${templateRepoUrl} ${
-        config.templateVersion ? `-b ${config.templateVersion} ` : ''
+      `git clone --recurse-submodules ${template.repo} ${
+        config.templateRelease ? `-b ${config.templateRelease} ` : ''
       } ${config.mlAppName}`
     );
 

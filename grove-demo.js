@@ -23,14 +23,13 @@ const log = (command, info) => {
 program
   .option('-C, --confirmAppName', 'Confirm appName without interactive prompt')
   .option(
-    '-n, --templateName <templateName>',
-    'Specify a templateName. Current choices: React, Vue'
+    '-t, --template <template>',
+    'Specify a template by id. Current choices: grove-react-template, grove-vue-template'
   )
   .option(
-    '-v, --templateVersion <templateVersion>',
+    '-r, --templateRelease <templateRelease>',
     'Use a specific version of the template, if available'
   )
-  // TODO template Name
   .option(
     '-H, --mlHost <mlHost>',
     'The host on which your MarkLogic REST server is available'
@@ -49,8 +48,8 @@ confirmAppName(program)
   .then(mlAppName => {
     const config = {
       mlAppName,
-      templateName: program.templateName,
-      templateVersion: program.templateVersion
+      templateID: program.template,
+      templateRelease: program.templateRelease
     };
     return createNew({ config });
   })

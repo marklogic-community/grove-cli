@@ -10,11 +10,11 @@ const utils = require('./src/utils');
 program
   .option('-C, --confirmAppName', 'Confirm appName without interactive prompt')
   .option(
-    '-n, --templateName <templateName>',
-    'Specify a templateName. Current choices: React, Vue'
+    '-t, --template <template>',
+    'Specify a template by id. Current choices: grove-react-template, grove-vue-template'
   )
   .option(
-    '-v, --templateVersion <templateVersion>',
+    '-r, --templateRelease <templateRelease>',
     'Use a specific version of the template, if available'
   )
   .parse(process.argv);
@@ -23,8 +23,8 @@ confirmAppName(program)
   .then(mlAppName => {
     const config = {
       mlAppName,
-      templateName: program.templateName,
-      templateVersion: program.templateVersion
+      templateID: program.template,
+      templateRelease: program.templateRelease
     };
     return createNew({ config });
   })
