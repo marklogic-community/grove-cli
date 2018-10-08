@@ -1,4 +1,4 @@
-const childProcess = require('child_process');
+const execSync = require('child_process').execSync;
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 
@@ -19,6 +19,55 @@ const availableTemplates = [
       'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
   }
 ];
+
+const isInGitRepository = () => {
+  try {
+    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+const isInMercurialRepository = () => {
+  try {
+    execSync('hg --cwd . root', { stdio: 'ignore' });
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+const tryGitInit = () => {
+  let didInit = false;
+  try {
+    execSync('git --version', { stdio: 'ignore' });
+    if (isInGitRepository() || isInMercurialRepository()) {
+      return false;
+    }
+
+    execSync('git init', { stdio: 'ignore' });
+    didInit = true;
+
+    execSync('git add -A', { stdio: 'ignore' });
+    execSync('git commit -m "Initial commit from Grove CLI"', {
+      stdio: 'ignore'
+    });
+    return true;
+  } catch (e) {
+    if (didInit) {
+      // If we successfully initialized but couldn't commit,
+      // maybe the commit author config is not set.
+      // remove the Git files to avoid a half-done state.
+      try {
+        execSync('rm -rf .git');
+      } catch (removeErr) {
+        // Ignore.
+      }
+    }
+    return false;
+  }
+};
 
 const identifyTemplate = templateID => {
   if (templateID) {
@@ -66,7 +115,7 @@ const createNew = function(options) {
     );
 
     // TODO: log to winston?
-    childProcess.execSync(
+    execSync(
       `git clone --recurse-submodules ${template.repo} ${
         program.templateRelease ? `-b ${program.templateRelease} ` : ''
       } ${config.mlAppName}`
@@ -75,17 +124,17 @@ const createNew = function(options) {
     // Any subsequent actions should happen in context of the new app
     process.chdir(config.mlAppName);
 
-    if (program.keepGit) {
-      childProcess.execSync('git remote rename origin upstream');
+    if (program.git === 'keep') {
+      execSync('git remote rename origin upstream');
 
-      childProcess.execSync(
-        'git submodule foreach "git remote rename origin upstream"'
-      );
+      execSync('git submodule foreach "git remote rename origin upstream"');
     } else {
-      childProcess.execSync('rm -rf .git .gitmodules */.git');
-      childProcess.execSync('git init');
-      childProcess.execSync('git add .');
-      childProcess.execSync('git commit -m "Initial commit by grove cli"');
+      execSync('rm -rf .git .gitmodules */.git');
+      if (!(program.git === 'false' || program.git === false)) {
+        if (tryGitInit()) {
+          console.log('Initialized a new git repository');
+        }
+      }
     }
 
     var writeNodeConfigPromise = nodeConfigManager.merge(config);

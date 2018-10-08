@@ -43,8 +43,8 @@ program
     'The port on which your Grove Node server will listen'
   )
   .option(
-    '--keepGit',
-    'Maintain upstream git remotes pointing to Grove core repos in the new project. Note that this option may be removed in future.'
+    '-g, --git <gitOption>',
+    'By default, the cli will initialize a new git repo with an initial commit, unless you are generating within an existing git or mercurial repo. Specify "false" to prevent this. Specify "keep" to maintain upstream git remotes pointing to Grove core repos.'
   )
   .parse(process.argv);
 
