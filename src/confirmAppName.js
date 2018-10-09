@@ -1,10 +1,19 @@
-var prompt = require('./prompt');
+const inquirer = require('inquirer');
 
-var confirmAppName = function(mlAppName) {
-  mlAppName = mlAppName || 'muir-app';
-  return prompt('Please confirm the name of your new project:', {
-    default: mlAppName
-  });
+const confirmAppName = program => {
+  const mlAppName = program.args[0] || 'grove-app';
+  if (program.confirmAppName) {
+    return Promise.resolve(mlAppName);
+  }
+  return inquirer
+    .prompt([
+      {
+        name: 'confirmedAppName',
+        message: 'Please confirm the name of your new project',
+        default: mlAppName
+      }
+    ])
+    .then(({ confirmedAppName }) => confirmedAppName);
 };
 
 module.exports = confirmAppName;

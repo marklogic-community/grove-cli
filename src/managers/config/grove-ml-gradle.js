@@ -1,6 +1,6 @@
 var util = require('util');
 var fs = require('fs');
-var handleError = require('./utils').handleError;
+var handleError = require('../../utils').handleError;
 
 // TODO: unit test
 // similar to nodeConfigManager
@@ -26,7 +26,7 @@ function read() {
 }
 
 // TODO: write non-existent properties relevant to ml-gradle??
-// TODO: think about a section dedicated to muir, might be easier
+// TODO: think about a section dedicated to grove, might be easier
 function mergeWrite(config) {
   let configKeys = Object.keys(config);
   const overwritePropertiesWithConfig = line => {
@@ -41,7 +41,7 @@ function mergeWrite(config) {
   return readFileLines()
     .then(propertyLines => propertyLines.map(overwritePropertiesWithConfig))
     .then(newPropertyLines => {
-      util.promisify(fs.writeFile)(
+      return util.promisify(fs.writeFile)(
         'marklogic/gradle.properties',
         newPropertyLines.join('\n')
       );

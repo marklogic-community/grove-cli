@@ -1,4 +1,7 @@
 const os = require('os');
+var util = require('util');
+var fs = require('fs');
+
 const logger = require('./logger');
 let gradleExeFile;
 
@@ -17,6 +20,15 @@ function gradleExecutable() {
   return gradleExeFile;
 }
 
+function getPackageJson(dir) {
+  const packageJsonPath = `${dir ? dir + '/' : './'}package.json`;
+  return util
+    .promisify(fs.readFile)(packageJsonPath)
+    .then(function(packageJsonBuffer) {
+      return JSON.parse(packageJsonBuffer.toString());
+    });
+}
+
 function handleError(error) {
   logger.error(error);
   process.exit(1);
@@ -24,6 +36,7 @@ function handleError(error) {
 
 module.exports = {
   handleError,
+  getPackageJson,
   gradleExecutable,
   logger
 };
