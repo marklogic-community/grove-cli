@@ -1,6 +1,6 @@
 {
   "name": "grove-cli",
-  "version": "0.10.0-alpha",
+  "version": "0.10.0-beta",
   "description": "A command-line tool for generating Grove applications.",
   "main": "index.js",
   "bin": {
