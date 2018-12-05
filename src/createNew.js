@@ -10,7 +10,7 @@ const handleError = require('./utils').handleError;
 const logger = require('./utils/logger');
 
 var rmDirCmd = os.platform().startsWith('win') ? 'RD /S /Q ' : 'rm -rf ';
-var rmFileCmd = os.platform().startsWith('win') ? 'DEL /Q /S /F /A H ' : 'rm ';
+var rmFileCmd = os.platform().startsWith('win') ? 'DEL /Q /F /A H ' : 'rm ';
 
 const availableTemplates = [
   {
