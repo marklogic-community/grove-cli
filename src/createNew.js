@@ -5,6 +5,7 @@ const inquirer = require('inquirer');
 const nodeConfigManager = require('./managers/config/grove-node');
 const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 const handleError = require('./utils').handleError;
+const logger = require('./utils/logger');
 
 const availableTemplates = [
   {
@@ -46,23 +47,32 @@ const tryGitInit = () => {
       return false;
     }
 
-    execSync('git init', { stdio: 'ignore' });
-    didInit = true;
-
-    execSync('git add -A', { stdio: 'ignore' });
-    execSync('git commit -m "Initial commit from Grove CLI"', {
-      stdio: 'ignore'
-    });
+		execSync('git init', { stdio: 'ignore' });
+		didInit = true;
+    
+    execSync('git add -A', { stdio: 'ignore' });	
+    execSync('git commit -m "Initial commit from Grove CLI"', { 
+			stdio: 'ignore' 
+		});
+		
     return true;
   } catch (e) {
+		logger.info(e);
     if (didInit) {
       // If we successfully initialized but couldn't commit,
       // maybe the commit author config is not set.
       // remove the Git files to avoid a half-done state.
       try {
+				if(e.status === 128 && e.message.includes('git commit')) {
+					console.log(chalk.red('\nError setting up an initial Grove git repository. '));
+					console.log(chalk.red('Is the user.email and user.name set in git configs?'))
+					console.log(chalk.blue('Grove recommends git for configuration management.'))
+					logger.info('user.email and user.name are not set. These must be set for git commit');
+				}
         execSync('rm -rf .git');
       } catch (removeErr) {
         // Ignore.
+				logger.info(removeErr);
       }
     }
     return false;
