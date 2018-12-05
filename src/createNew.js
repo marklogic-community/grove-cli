@@ -28,7 +28,9 @@ const availableTemplates = [
 
 const isInGitRepository = () => {
   try {
-    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    execSync('git rev-parse --is-inside-work-tree', {
+      stdio: 'ignore'
+    });
     return true;
   } catch (e) {
     return false;
@@ -37,7 +39,9 @@ const isInGitRepository = () => {
 
 const isInMercurialRepository = () => {
   try {
-    execSync('hg --cwd . root', { stdio: 'ignore' });
+    execSync('hg --cwd . root', {
+      stdio: 'ignore'
+    });
     return true;
   } catch (e) {
     return false;
@@ -47,38 +51,52 @@ const isInMercurialRepository = () => {
 const tryGitInit = () => {
   let didInit = false;
   try {
-    execSync('git --version', { stdio: 'ignore' });
+    execSync('git --version', {
+      stdio: 'ignore'
+    });
     if (isInGitRepository() || isInMercurialRepository()) {
       return false;
     }
 
-		execSync('git init', { stdio: 'ignore' });
-		didInit = true;
-    
-    execSync('git add -A', { stdio: 'ignore' });	
-    execSync('git commit -m "Initial commit from Grove CLI"', { 
-			stdio: 'ignore' 
-		});
-		
+    execSync('git init', {
+      stdio: 'ignore'
+    });
+    didInit = true;
+
+    execSync('git add -A', {
+      stdio: 'ignore'
+    });
+    execSync('git commit -m "Initial commit from Grove CLI"', {
+      stdio: 'ignore'
+    });
+
     return true;
   } catch (e) {
-		logger.info(e);
+    logger.info(e);
     if (didInit) {
       // If we successfully initialized but couldn't commit,
       // maybe the commit author config is not set.
       // remove the Git files to avoid a half-done state.
       try {
-				if(e.status === 128 && e.message.includes('git commit')) {
-					console.log(chalk.red('\nError setting up an initial Grove git repository. '));
-					console.log(chalk.red('Is the user.email and user.name set in git configs?'))
-					console.log(chalk.blue('Grove recommends git for configuration management.'))
-					logger.info('user.email and user.name are not set. These must be set for git commit');
-				}
-				
-				execSync(rmDirCmd + path.join(process.cwd(), '.git'));
+        if (e.status === 128 && e.message.includes('git commit')) {
+          console.log(
+            chalk.red('\nError setting up an initial Grove git repository. ')
+          );
+          console.log(
+            chalk.red('Is the user.email and user.name set in git configs?')
+          );
+          console.log(
+            chalk.blue('Grove recommends git for configuration management.')
+          );
+          logger.info(
+            'user.email and user.name are not set. These must be set for git commit'
+          );
+        }
+
+        execSync(rmDirCmd + path.join(process.cwd(), '.git'));
       } catch (removeErr) {
         // Ignore.
-				logger.info(removeErr);
+        logger.info(removeErr);
       }
     }
     return false;
@@ -145,15 +163,20 @@ const createNew = function(options) {
 
       execSync('git submodule foreach "git remote rename origin upstream"');
     } else {
-			
-			// Remove artifacts of the submodule clone process.  Must do this 
-			// individually to ensure *nix and Windows compatibility.
-			execSync(rmDirCmd + path.join(process.cwd(), '.git'));
-			execSync(rmFileCmd + path.join(process.cwd(), '.gitmodules'));
-			execSync(rmFileCmd + '.git', { cwd: path.join(process.cwd(), 'marklogic') });
-			execSync(rmFileCmd + '.git', { cwd: path.join(process.cwd(), 'middle-tier') });
-			execSync(rmFileCmd + '.git', { cwd: path.join(process.cwd(), 'ui') });
-			//execSync('rm -rf .git .gitmodules */.git');
+      // Remove artifacts of the submodule clone process.  Must do this
+      // individually to ensure *nix and Windows compatibility.
+      execSync(rmDirCmd + path.join(process.cwd(), '.git'));
+      execSync(rmFileCmd + path.join(process.cwd(), '.gitmodules'));
+      execSync(rmFileCmd + '.git', {
+        cwd: path.join(process.cwd(), 'marklogic')
+      });
+      execSync(rmFileCmd + '.git', {
+        cwd: path.join(process.cwd(), 'middle-tier')
+      });
+      execSync(rmFileCmd + '.git', {
+        cwd: path.join(process.cwd(), 'ui')
+      });
+      //execSync('rm -rf .git .gitmodules */.git');
       if (!(program.git === 'false' || program.git === false)) {
         if (tryGitInit()) {
           console.log('Initialized a new git repository');
