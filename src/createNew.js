@@ -1,11 +1,16 @@
 const execSync = require('child_process').execSync;
 const chalk = require('chalk');
 const inquirer = require('inquirer');
+const os = require('os');
+const path = require('path');
 
 const nodeConfigManager = require('./managers/config/grove-node');
 const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 const handleError = require('./utils').handleError;
 const logger = require('./utils/logger');
+
+var rmDirCmd = os.platform().startsWith('win') ? 'RD /S /Q ' : 'rm -rf ';
+var rmFileCmd = os.platform().startsWith('win') ? 'DEL /Q /S /F /A H ' : 'rm ';
 
 const availableTemplates = [
   {
@@ -69,7 +74,8 @@ const tryGitInit = () => {
 					console.log(chalk.blue('Grove recommends git for configuration management.'))
 					logger.info('user.email and user.name are not set. These must be set for git commit');
 				}
-        execSync('rm -rf .git');
+				
+				execSync(rmDirCmd + path.join(process.cwd(), '.git'));
       } catch (removeErr) {
         // Ignore.
 				logger.info(removeErr);
@@ -139,7 +145,15 @@ const createNew = function(options) {
 
       execSync('git submodule foreach "git remote rename origin upstream"');
     } else {
-      execSync('rm -rf .git .gitmodules */.git');
+			
+			// Remove artifacts of the submodule clone process.  Must do this 
+			// individually to ensure *nix and Windows compatibility.
+			execSync(rmDirCmd + path.join(process.cwd(), '.git'));
+			execSync(rmFileCmd + path.join(process.cwd(), '.gitmodules'));
+			execSync(rmFileCmd + '.git', { cwd: path.join(process.cwd(), 'marklogic') });
+			execSync(rmFileCmd + '.git', { cwd: path.join(process.cwd(), 'middle-tier') });
+			execSync(rmFileCmd + '.git', { cwd: path.join(process.cwd(), 'ui') });
+			//execSync('rm -rf .git .gitmodules */.git');
       if (!(program.git === 'false' || program.git === false)) {
         if (tryGitInit()) {
           console.log('Initialized a new git repository');
