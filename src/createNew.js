@@ -2,7 +2,6 @@ const execSync = require('child_process').execSync;
 const chalk = require('chalk');
 const fs = require('fs');
 const inquirer = require('inquirer');
-const os = require('os');
 const path = require('path');
 
 const nodeConfigManager = require('./managers/config/grove-node');
@@ -10,8 +9,7 @@ const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 const handleError = require('./utils').handleError;
 const logger = require('./utils/logger');
 
-const availableTemplates = [
-  {
+const availableTemplates = [{
     id: 'grove-react-template',
     name: 'React',
     repo: 'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git'
@@ -19,8 +17,7 @@ const availableTemplates = [
   {
     id: 'grove-vue-template',
     name: 'Vue',
-    repo:
-      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
+    repo: 'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
   }
 ];
 
@@ -49,7 +46,7 @@ const isInMercurialRepository = () => {
 // Inspired by https://stackoverflow.com/a/32197381
 const deleteFolderRecursive = pathToRemove => {
   if (fs.existsSync(pathToRemove)) {
-    fs.readdirSync(pathToRemove).forEach(function(file, index){
+    fs.readdirSync(pathToRemove).forEach(function (file, index) {
       var currPath = path.join(pathToRemove, file);
       if (fs.lstatSync(currPath).isDirectory()) {
         // recurse
@@ -98,10 +95,13 @@ const tryGitInit = () => {
             chalk.red('\nError setting up an initial Grove git repository. ')
           );
           console.log(
-            chalk.red('Is the user.email and user.name set in git configs?')
-          );
-          console.log(
-            chalk.blue('Grove recommends git for configuration management.')
+            chalk.blue(
+              '\n' +
+                'If you want to use git, as recommended by the Grove team, ' +
+                'you may need to set your username and email:' +
+                '\n\n\t git config --global user.name "Your Name"' +
+                '\n\t git config --global user.email "your_email@example.com")'
+            )
           );
           logger.info(
             'user.email and user.name are not set. These must be set for git commit'
@@ -128,24 +128,23 @@ const identifyTemplate = templateID => {
     console.log(chalk.red(`\nIgnoring the unknown template "${templateID}".`));
   }
   return inquirer
-    .prompt([
-      {
-        name: 'template',
-        type: 'list',
-        message:
-          'Do you want to create your Grove project with the React or the Vue UI?',
-        choices: availableTemplates.map(template => {
-          return {
-            name: template.name,
-            value: template
-          };
-        })
-      }
-    ])
-    .then(({ template }) => template);
+    .prompt([{
+      name: 'template',
+      type: 'list',
+      message: 'Do you want to create your Grove project with the React or the Vue UI?',
+      choices: availableTemplates.map(template => {
+        return {
+          name: template.name,
+          value: template
+        };
+      })
+    }])
+    .then(({
+      template
+    }) => template);
 };
 
-const createNew = function(options) {
+const createNew = function (options) {
   options = options || {};
   const program = options.program;
   const config = options.config || {};
@@ -195,7 +194,7 @@ const createNew = function(options) {
     var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
 
     return Promise.all([writeNodeConfigPromise, writeMlGradleConfigPromise])
-      .then(function() {
+      .then(function () {
         return config;
       })
       .catch(handleError);
