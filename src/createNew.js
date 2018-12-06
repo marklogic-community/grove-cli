@@ -1,5 +1,6 @@
 const execSync = require('child_process').execSync;
 const chalk = require('chalk');
+const fs = require('fs');
 const inquirer = require('inquirer');
 const os = require('os');
 const path = require('path');
@@ -8,9 +9,6 @@ const nodeConfigManager = require('./managers/config/grove-node');
 const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 const handleError = require('./utils').handleError;
 const logger = require('./utils/logger');
-
-var rmDirCmd = os.platform().startsWith('win') ? 'RD /S /Q ' : 'rm -rf ';
-var rmFileCmd = os.platform().startsWith('win') ? 'DEL /Q /F /A H ' : 'rm ';
 
 const availableTemplates = [
   {
@@ -45,6 +43,23 @@ const isInMercurialRepository = () => {
     return true;
   } catch (e) {
     return false;
+  }
+};
+
+// Inspired by https://stackoverflow.com/a/32197381
+const deleteFolderRecursive = pathToRemove => {
+  if (fs.existsSync(pathToRemove)) {
+    fs.readdirSync(pathToRemove).forEach(function(file, index){
+      var currPath = path.join(pathToRemove, file);
+      if (fs.lstatSync(currPath).isDirectory()) {
+        // recurse
+        deleteFolderRecursive(currPath);
+      } else {
+        // delete file
+        fs.unlinkSync(currPath);
+      }
+    });
+    fs.rmdirSync(pathToRemove);
   }
 };
 
@@ -92,8 +107,7 @@ const tryGitInit = () => {
             'user.email and user.name are not set. These must be set for git commit'
           );
         }
-
-        execSync(rmDirCmd + path.join(process.cwd(), '.git'));
+        deleteFolderRecursive(path.join(process.cwd(), '.git'));
       } catch (removeErr) {
         // Ignore.
         logger.info(removeErr);
@@ -165,18 +179,11 @@ const createNew = function(options) {
     } else {
       // Remove artifacts of the submodule clone process.  Must do this
       // individually to ensure *nix and Windows compatibility.
-      execSync(rmDirCmd + path.join(process.cwd(), '.git'));
-      execSync(rmFileCmd + path.join(process.cwd(), '.gitmodules'));
-      execSync(rmFileCmd + '.git', {
-        cwd: path.join(process.cwd(), 'marklogic')
-      });
-      execSync(rmFileCmd + '.git', {
-        cwd: path.join(process.cwd(), 'middle-tier')
-      });
-      execSync(rmFileCmd + '.git', {
-        cwd: path.join(process.cwd(), 'ui')
-      });
-      //execSync('rm -rf .git .gitmodules */.git');
+      deleteFolderRecursive(path.join(process.cwd(), '.git'));
+      fs.unlinkSync(path.join(process.cwd(), '.gitmodules'));
+      fs.unlinkSync(path.join(process.cwd(), 'marklogic', '.git'));
+      fs.unlinkSync(path.join(process.cwd(), 'middle-tier', '.git'));
+      fs.unlinkSync(path.join(process.cwd(), 'ui', '.git'));
       if (!(program.git === 'false' || program.git === false)) {
         if (tryGitInit()) {
           console.log('Initialized a new git repository');
