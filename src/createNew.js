@@ -1,13 +1,15 @@
 const execSync = require('child_process').execSync;
 const chalk = require('chalk');
+const fs = require('fs');
 const inquirer = require('inquirer');
+const path = require('path');
 
 const nodeConfigManager = require('./managers/config/grove-node');
 const mlGradleConfigManager = require('./managers/config/grove-ml-gradle');
 const handleError = require('./utils').handleError;
+const logger = require('./utils/logger');
 
-const availableTemplates = [
-  {
+const availableTemplates = [{
     id: 'grove-react-template',
     name: 'React',
     repo: 'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git'
@@ -15,14 +17,15 @@ const availableTemplates = [
   {
     id: 'grove-vue-template',
     name: 'Vue',
-    repo:
-      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
+    repo: 'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
   }
 ];
 
 const isInGitRepository = () => {
   try {
-    execSync('git rev-parse --is-inside-work-tree', { stdio: 'ignore' });
+    execSync('git rev-parse --is-inside-work-tree', {
+      stdio: 'ignore'
+    });
     return true;
   } catch (e) {
     return false;
@@ -31,38 +34,83 @@ const isInGitRepository = () => {
 
 const isInMercurialRepository = () => {
   try {
-    execSync('hg --cwd . root', { stdio: 'ignore' });
+    execSync('hg --cwd . root', {
+      stdio: 'ignore'
+    });
     return true;
   } catch (e) {
     return false;
   }
 };
 
+// Inspired by https://stackoverflow.com/a/32197381
+const deleteFolderRecursive = pathToRemove => {
+  if (fs.existsSync(pathToRemove)) {
+    fs.readdirSync(pathToRemove).forEach(function (file, index) {
+      var currPath = path.join(pathToRemove, file);
+      if (fs.lstatSync(currPath).isDirectory()) {
+        // recurse
+        deleteFolderRecursive(currPath);
+      } else {
+        // delete file
+        fs.unlinkSync(currPath);
+      }
+    });
+    fs.rmdirSync(pathToRemove);
+  }
+};
+
 const tryGitInit = () => {
   let didInit = false;
   try {
-    execSync('git --version', { stdio: 'ignore' });
+    execSync('git --version', {
+      stdio: 'ignore'
+    });
     if (isInGitRepository() || isInMercurialRepository()) {
       return false;
     }
 
-    execSync('git init', { stdio: 'ignore' });
+    execSync('git init', {
+      stdio: 'ignore'
+    });
     didInit = true;
 
-    execSync('git add -A', { stdio: 'ignore' });
+    execSync('git add -A', {
+      stdio: 'ignore'
+    });
     execSync('git commit -m "Initial commit from Grove CLI"', {
       stdio: 'ignore'
     });
+
     return true;
   } catch (e) {
+    logger.info(e);
     if (didInit) {
       // If we successfully initialized but couldn't commit,
       // maybe the commit author config is not set.
       // remove the Git files to avoid a half-done state.
+      if (e.status === 128 && e.message.includes('git commit')) {
+        console.log(
+          chalk.red('\nError setting up an initial Grove git repository. ')
+        );
+        console.log(
+          chalk.blue(
+            '\n' +
+              'If you want to use git, as recommended by the Grove team, ' +
+              'you may need to set your username and email:' +
+              '\n\n\t git config --global user.name "Your Name"' +
+              '\n\t git config --global user.email "your_email@example.com")'
+          )
+        );
+        logger.info(
+          'user.email and user.name are not set. These must be set for git commit'
+        );
+      }
       try {
-        execSync('rm -rf .git');
+        deleteFolderRecursive(path.join(process.cwd(), '.git'));
       } catch (removeErr) {
         // Ignore.
+        logger.info(removeErr);
       }
     }
     return false;
@@ -80,24 +128,23 @@ const identifyTemplate = templateID => {
     console.log(chalk.red(`\nIgnoring the unknown template "${templateID}".`));
   }
   return inquirer
-    .prompt([
-      {
-        name: 'template',
-        type: 'list',
-        message:
-          'Do you want to create your Grove project with the React or the Vue UI?',
-        choices: availableTemplates.map(template => {
-          return {
-            name: template.name,
-            value: template
-          };
-        })
-      }
-    ])
-    .then(({ template }) => template);
+    .prompt([{
+      name: 'template',
+      type: 'list',
+      message: 'Do you want to create your Grove project with the React or the Vue UI?',
+      choices: availableTemplates.map(template => {
+        return {
+          name: template.name,
+          value: template
+        };
+      })
+    }])
+    .then(({
+      template
+    }) => template);
 };
 
-const createNew = function(options) {
+const createNew = function (options) {
   options = options || {};
   const program = options.program;
   const config = options.config || {};
@@ -129,7 +176,13 @@ const createNew = function(options) {
 
       execSync('git submodule foreach "git remote rename origin upstream"');
     } else {
-      execSync('rm -rf .git .gitmodules */.git');
+      // Remove artifacts of the submodule clone process.  Must do this
+      // individually to ensure *nix and Windows compatibility.
+      deleteFolderRecursive(path.join(process.cwd(), '.git'));
+      fs.unlinkSync(path.join(process.cwd(), '.gitmodules'));
+      fs.unlinkSync(path.join(process.cwd(), 'marklogic', '.git'));
+      fs.unlinkSync(path.join(process.cwd(), 'middle-tier', '.git'));
+      fs.unlinkSync(path.join(process.cwd(), 'ui', '.git'));
       if (!(program.git === 'false' || program.git === false)) {
         if (tryGitInit()) {
           console.log('Initialized a new git repository');
@@ -141,7 +194,7 @@ const createNew = function(options) {
     var writeMlGradleConfigPromise = mlGradleConfigManager.merge(config);
 
     return Promise.all([writeNodeConfigPromise, writeMlGradleConfigPromise])
-      .then(function() {
+      .then(function () {
         return config;
       })
       .catch(handleError);
