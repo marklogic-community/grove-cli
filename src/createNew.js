@@ -89,24 +89,24 @@ const tryGitInit = () => {
       // If we successfully initialized but couldn't commit,
       // maybe the commit author config is not set.
       // remove the Git files to avoid a half-done state.
+      if (e.status === 128 && e.message.includes('git commit')) {
+        console.log(
+          chalk.red('\nError setting up an initial Grove git repository. ')
+        );
+        console.log(
+          chalk.blue(
+            '\n' +
+              'If you want to use git, as recommended by the Grove team, ' +
+              'you may need to set your username and email:' +
+              '\n\n\t git config --global user.name "Your Name"' +
+              '\n\t git config --global user.email "your_email@example.com")'
+          )
+        );
+        logger.info(
+          'user.email and user.name are not set. These must be set for git commit'
+        );
+      }
       try {
-        if (e.status === 128 && e.message.includes('git commit')) {
-          console.log(
-            chalk.red('\nError setting up an initial Grove git repository. ')
-          );
-          console.log(
-            chalk.blue(
-              '\n' +
-                'If you want to use git, as recommended by the Grove team, ' +
-                'you may need to set your username and email:' +
-                '\n\n\t git config --global user.name "Your Name"' +
-                '\n\t git config --global user.email "your_email@example.com")'
-            )
-          );
-          logger.info(
-            'user.email and user.name are not set. These must be set for git commit'
-          );
-        }
         deleteFolderRecursive(path.join(process.cwd(), '.git'));
       } catch (removeErr) {
         // Ignore.
