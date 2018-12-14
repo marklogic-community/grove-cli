@@ -1,7 +1,7 @@
 {
-  "name": "grove-cli",
-  "version": "0.10.0-beta",
-  "description": "A command-line tool for generating Grove applications.",
+  "name": "@marklogic-community/grove-cli",
+  "version": "1.0.0-rc.1",
+  "description": "A command-line tool for generating Grove projects.",
   "main": "index.js",
   "bin": {
     "grove": "./index.js"
@@ -12,13 +12,29 @@
     "test": "npm run lint && echo \"Error: no test specified\" && exit 1",
     "test:watch": "npm run lint && echo \"Error: no test specified\" && exit 1"
   },
+  "repository": "https://project.marklogic.com/repo/users/pmcelwee/repos/grove-cli/browse",
   "keywords": [
     "MarkLogic",
     "Grove",
     "UI",
+    "GUI",
+    "front-end",
     "app generator"
   ],
-  "author": "Patrick McElwee <patrick.mcelwee@marklogic.com> (patmac.us)",
+  "contributors": [
+    {
+      "name": "Patrick McElwee",
+      "url": "https://github.com/patrickmcelwee"
+    },
+    {
+      "name": "Marianne Myers",
+      "url": "https://github.com/mariannemyers"
+    },
+    {
+      "name": "Geert Josten",
+      "url": "https://github.com/grtjn"
+    }
+  ],
   "license": "Apache-2.0",
   "dependencies": {
     "chalk": "^2.4.1",
@@ -35,6 +51,6 @@
     "prettier": "^1.13.7"
   },
   "engines": {
-    "node": ">=8.3.0"
+    "node": ">=8.6.0"
   }
 }
