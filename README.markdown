@@ -2,13 +2,7 @@
 
 ## Installation
 
-Soon, it will be:
-
-    npm install -g grove-cli
-
-For now, until we publish this package, clone this repository, `cd` into it and then:
-
-    npm install -g
+    npm install -g @marklogic-community/grove-cli
 
 This provides the `grove` command.
 
@@ -16,7 +10,7 @@ This provides the `grove` command.
 
 ### grove new
 
-Generates a new Grove application as a subdirectory of the current directory. Eventually, `new` will offer a choice among application templates. For now, it generates a React front-end with a NodeJS middle-tier.
+Generates a new Grove project as a subdirectory of the current directory. The `new` command offers a choice among project templates. For now, it offers [React](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) and [Vue](https://project.marklogic.com/repo/users/gjosten/repos/grove-vue-template/browse) options.
 
 Use it by passing your new application name.
 
@@ -26,11 +20,11 @@ You can see options for this command by running:
 
     grove new --help
 
-For example, you can pass a `--templateVersion`. This corresponds to a branch or tag name in the template's git repository now - though, in the future, it may refer to some other named template version.
+For example, you can pass a `--templateVersion`. This currently corresponds to a branch or tag name in the template's git repository - though, in the future, it may refer to some other named template version.
 
 ### grove config
 
-Generates or modifies settings for your application, based on prompts. This is the preferred way to manage configuration files. We plan to add additional functionality to it soon. **Run this command from the parent directory of your generated project.**
+Generates or modifies settings for your application, based on prompts. This is the preferred way to manage configuration files. **Run this command from the parent directory of your generated project.**
 
     grove config
 
@@ -50,4 +44,4 @@ You can see options for this command by running:
 
     grove demo --help
 
-For example, you can pass a `--templateVersion`. This corresponds to a branch or tag name in the template's git repository now - though, in the future, it may refer to some other named template version.
+For example, you can pass a `--templateVersion`. This currently corresponds to a branch or tag name in the template's git repository - though, in the future, it may refer to some other named template version.
