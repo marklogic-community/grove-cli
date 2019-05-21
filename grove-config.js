@@ -17,6 +17,11 @@ program
     '-p, --nodePort <nodePort>',
     'The port on which your Grove Node server will listen'
   )
+  .on('--help', () => {
+    console.log(
+      '\n  NOTE: The first argument to `grove config` will be the environment name you wish to modify. For example, `grove config development` will update `middle-tier/.env.development` and `marklogic/gradle-development.properties`.\n'
+    );
+  })
   .parse(process.argv);
 
 const config = {

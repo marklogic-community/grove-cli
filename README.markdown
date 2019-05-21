@@ -12,9 +12,9 @@ This provides the `grove` command.
 
 Generates a new Grove project as a subdirectory of the current directory. The `new` command offers a choice among project templates. For now, it offers [React](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) and [Vue](https://project.marklogic.com/repo/users/gjosten/repos/grove-vue-template/browse) options.
 
-Use it by passing your new application name `my-app`.
+Use it by passing your new application name (for example, `my-app`).
 
-    grove new <my-app>
+    grove new my-app
 
 You can see options for this command by running:
 
@@ -28,12 +28,11 @@ Generates or modifies settings for your application, based on prompts. This is t
 
     grove config
 
+You can pass the `environment` you want to override. By default it modifies the `local` environment. You could change this to `development`, for example:
 
-You can pass the `environment` you want to override. By default it modifies the local environment.
+    grove config development
 
-    grove config <environment>
-
-You can see options for this command by running:
+You can see all options for this command by running:
 
     grove config --help
 
