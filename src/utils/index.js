@@ -36,13 +36,15 @@ function handleError(error) {
 
 function getEnvProperties(environment, parentFolder, localOnly) {
   var dotenvFilename = parentFolder + '/.env';
-  var envLocal = environment ? dotenvFilename + '.' + environment + '.local' : null;
+  var envLocal = environment
+    ? dotenvFilename + '.' + environment + '.local'
+    : null;
   var local = dotenvFilename + '.local';
 
-  if(environment && localOnly) {
+  if (environment && localOnly) {
     return envLocal;
   }
-  if(localOnly) {
+  if (localOnly) {
     return local;
   }
 
@@ -50,33 +52,6 @@ function getEnvProperties(environment, parentFolder, localOnly) {
     dotenvFilename,
     local,
     environment ? dotenvFilename + '.' + environment : null,
-    envLocal,
-  ].filter(Boolean);
-
-  var properties = [];
-
-  fileNames.forEach(function(fileName) {
-    if (fs.existsSync(fileName)) {
-      properties.push(fileName)
-    }
-  });
-
-  return properties;
-}
-
-
-function getGradleProperties(environment, localOnly) {
-  var gradlePropPrefix = 'marklogic/gradle';
-  var gradlePropSuffix = '.properties';
-  var env = environment ? environment : 'local';
-  var envLocal = gradlePropPrefix + '-' + env + gradlePropSuffix;
-
-  if(localOnly) {
-    return envLocal;
-  }
-
-  var fileNames = [
-    gradlePropPrefix + gradlePropSuffix,
     envLocal
   ].filter(Boolean);
 
@@ -84,37 +59,60 @@ function getGradleProperties(environment, localOnly) {
 
   fileNames.forEach(function(fileName) {
     if (fs.existsSync(fileName)) {
-      properties.push(fileName)
+      properties.push(fileName);
+    }
+  });
+
+  return properties;
+}
+
+function getGradleProperties(environment, localOnly) {
+  var gradlePropPrefix = 'marklogic/gradle';
+  var gradlePropSuffix = '.properties';
+  var env = environment ? environment : 'local';
+  var envLocal = gradlePropPrefix + '-' + env + gradlePropSuffix;
+
+  if (localOnly) {
+    return envLocal;
+  }
+
+  var fileNames = [gradlePropPrefix + gradlePropSuffix, envLocal].filter(
+    Boolean
+  );
+
+  var properties = [];
+
+  fileNames.forEach(function(fileName) {
+    if (fs.existsSync(fileName)) {
+      properties.push(fileName);
     }
   });
   return properties;
 }
 
 function readFileLines(filename) {
-  if(filename && fs.existsSync(filename)) {
+  if (filename && fs.existsSync(filename)) {
     return util
       .promisify(fs.readFile)(filename)
       .then(buffer => buffer.toString().split('\n'));
   }
-  return new Promise((resolve, reject) => resolve([]));
+  return new Promise(resolve => resolve([]));
 }
 
 function configify(configMap, properyLines) {
-  return properyLines
-    .reduce(function(config, property) {
-      var propertyArray = property.split('=');
-      var key = propertyArray[0];
-      var value = propertyArray[1];
-      config[configMap[key]] = value;
-      return config;
-    }, {});
+  return properyLines.reduce(function(config, property) {
+    var propertyArray = property.split('=');
+    var key = propertyArray[0];
+    var value = propertyArray[1];
+    config[configMap[key]] = value;
+    return config;
+  }, {});
 }
 
 function read(filename, configMap) {
-  return readFileLines(filename)
-    .then(function(propertyLines) {
-      return configify(configMap, propertyLines)
-    });
+  return readFileLines(filename).then(function(propertyLines) {
+    return configify(configMap, propertyLines);
+  });
 }
 
 function mergeWrite(filename, configMap, config) {
@@ -122,7 +120,7 @@ function mergeWrite(filename, configMap, config) {
   var newPropertyLines = [];
   configKeys.forEach(key => {
     var value = config[configMap[key]];
-    if(value) {
+    if (value) {
       newPropertyLines.push(key + '=' + value);
     }
   });
@@ -137,7 +135,8 @@ function merge(filename, configMap, config) {
     })
     .then(function(mergedConfig) {
       return mergeWrite(filename, configMap, mergedConfig);
-    }).catch(handleError);
+    })
+    .catch(handleError);
 }
 
 module.exports = {

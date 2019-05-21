@@ -1,5 +1,3 @@
-var util = require('util');
-var fs = require('fs');
 var utils = require('../../utils');
 
 //we only need to write the new config not get all properties in the local environment config file

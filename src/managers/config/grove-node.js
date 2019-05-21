@@ -1,10 +1,12 @@
-var util = require('util');
-var fs = require('fs');
 var utils = require('../../utils');
 
 //we only need to write the new config not get all properties in the local environment config file
 function merge(config) {
-  var filename = utils.getEnvProperties(config.environment, 'middle-tier', true);
+  var filename = utils.getEnvProperties(
+    config.environment,
+    'middle-tier',
+    true
+  );
   var configMap = {
     GROVE_APP_NAME: 'mlAppName',
     GROVE_ML_HOST: 'mlHost',

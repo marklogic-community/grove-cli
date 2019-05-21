@@ -23,7 +23,7 @@ const config = {
   mlHost: program.mlHost,
   mlRestPort: program.mlRestPort,
   nodePort: program.nodePort,
-  environment : program.args[0]
+  environment: program.args[0]
 };
 
 runConfig({ config }).then(process.exit);
