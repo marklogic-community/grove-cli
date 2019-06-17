@@ -1,16 +1,28 @@
 # MarkLogic Grove CLI (Command Line Interface)
 
+The grove-cli is a command-line tool that allows you to generate new Grove projects and configure existing ones.
+
+Grove is a UI toolkit. You can [learn more about Grove here](https://wiki.marklogic.com/display/SAL/Grove).
+
+In the future, more functionality will be added to the grove-cli. This is the central tool facilitating work with Grove.
+
 ## Installation
 
     npm install -g @marklogic-community/grove-cli
 
 This makes the `grove` command available on your command-line.
 
+## Pre-requisites
+
+The grove-cli requires that you have the following installed:
+
+- Node.js 8.10 or above. (Check that it is available by running `node -v`. If not, refer to [nodejs.org](https://nodejs.org) for installation instructions.)
+
 ## Usage
 
 ### grove new
 
-Generates a new Grove project as a subdirectory of the current directory. The `new` command offers a choice among project templates. For now, it offers [React](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) and [Vue](https://project.marklogic.com/repo/users/gjosten/repos/grove-vue-template/browse) options.
+Generates a new Grove project as a subdirectory of the current directory. The `new` command offers a choice among project templates. For now, it offers [React](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) and [Vue](https://project.marklogic.com/repo/users/gjosten/repos/grove-vue-template/browse) front-end options. Both make use of a Node Express middle-tier.
 
 Use it by passing your new Project name.
 
