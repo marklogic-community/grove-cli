@@ -159,7 +159,7 @@ const createNew = function(options) {
           config.mlAppName
         }" using the Grove ${
           template.name
-        } UI ${template.repo}, the Grove Node middle-tier, and ml-gradle...`
+        } UI, the Grove Node middle-tier, and ml-gradle...`
       )
     );
 
