@@ -13,13 +13,12 @@ const availableTemplates = [
   {
     id: 'grove-react-template',
     name: 'React',
-    repo: 'https://project.marklogic.com/repo/scm/nacw/grove-react-template.git'
+    repo: 'https://github.com/marklogic-community/grove-react-template.git'
   },
   {
     id: 'grove-vue-template',
     name: 'Vue',
-    repo:
-      'https://project.marklogic.com/repo/scm/~gjosten/grove-vue-template.git'
+    repo: 'https://github.com/marklogic-community/grove-vue-template.git'
   }
 ];
 
