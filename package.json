@@ -37,18 +37,18 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "chalk": "^2.4.1",
-    "commander": "^2.15.1",
+    "chalk": "^2.4.2",
+    "commander": "^2.20.3",
     "cross-spawn": "^6.0.5",
-    "inquirer": "^6.2.0",
-    "winston": "^3.1.0"
+    "inquirer": "^6.5.2",
+    "winston": "^3.7.2"
   },
   "devDependencies": {
-    "eslint": "^5.1.0",
-    "eslint-config-prettier": "^2.9.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^2.10.0",
     "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-prettier": "^2.6.0",
-    "prettier": "^1.13.7"
+    "eslint-plugin-prettier": "^2.7.0",
+    "prettier": "^1.19.1"
   },
   "engines": {
     "node": ">=8.6.0"
